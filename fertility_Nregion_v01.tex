@@ -1,0 +1,1301 @@
+% !TEX program = xelatex
+% !TEX encoding = UTF-8
+% Source-only N-region extension of fertility_2region_v01.tex.
+% Research focus: fertility and the spatial distribution of the workforce.
+\documentclass[UTF8,a4paper,zihao=-4,fontset=windows]{ctexart}
+\usepackage[margin=2.5cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm,mathtools}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem,microtype,fancyhdr}
+\usepackage[authoryear,round]{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,breaklinks=true]{hyperref}
+\usepackage{bookmark}
+\hypersetup{pdftitle={N地区生育率对劳动力空间分布影响的动态空间一般均衡模型},pdfauthor={模型研究稿}}
+\setlist{nosep,leftmargin=2em}
+\setlength{\parskip}{0.3em}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\arraystretch}{1.18}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\numberwithin{equation}{section}
+\setcounter{tocdepth}{1}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\pc}{P^{C}}
+\newcommand{\invp}{Q}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ones}{\bm{1}}
+\newcommand{\Id}{\mathsf{I}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\spr}{spr}
+\DeclareMathOperator{\LSE}{LSE}
+\newtheorem{proposition}{命题}[section]
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 生育率与劳动力空间分布}
+\fancyhead[R]{\small 外生生育率与资本积累}
+\fancyfoot[C]{\thepage}
+\title{$N$地区生育率对劳动力空间分布影响的\\动态空间一般均衡模型\\[0.4em]
+\large 多部门、迁移摩擦、商品贸易与资本积累}
+\author{劳动力地区份额与动态空间重配}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+将研究对象调整为生育率如何改变劳动力在不同地区之间的分布，以各地区成年劳动力人数占全国成年劳动力的份额为主要结果，以地区效率劳动份额和地区部门联合劳动份额为补充指标。生育率路径仍外生，儿童经过固定年限进入成年劳动人口；工人进行前瞻性迁移选择，本地资本所有者选择消费与投资，劳动和商品市场逐期出清。不同地区的出生与成年进入差异直接改变劳动力地区构成，抚养负担通过迁移价值影响现有劳动力重配，贸易、生产与资本积累进一步产生反馈。正文推导空间份额的运动方程、成年进入与净迁移分解，以及剔除全国总量变化后的分布响应。全国人口和劳动总量仍由原有均衡决定，不为研究空间分布而额外将其固定。本稿仅修改理论与LaTeX源码，未运行多地区估计或过渡路径模拟。
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+
+\section{研究问题、空间单位与基本环境}
+\label{sec:lg-environment}
+
+\subsection{地区数、人口符号与时间}
+地区集合与部门集合分别为
+\begin{equation}
+ \mathcal R=\{1,\ldots,N\},\quad N\geq2,\qquad
+ \mathcal S=\{1,\ldots,S\},\quad S\geq2.
+ \label{eq:lg-sets}
+\end{equation}
+$N$ 为固定的地区数，不是人口数量。为避免符号冲突，本稿以 $n_{it}$ 表示成年工人人数，对应两地区原稿中的 $N_{it}$；原稿其余核心符号和经济含义保持不变。时间 $t=0,1,\ldots$，一期为一年。$i,j,k\in\mathcal R$ 为地区索引，$s,q\in\mathcal S$ 为部门索引，$a=0,\ldots,J-1$ 为儿童年龄。双边下标 $ij$ 始终表示\textbf{从起点 $i$ 到终点 $j$}。
+
+\subsection{研究对象调整与保留的基础设定}
+本稿的核心问题改为：\textbf{外生生育率的地区差异及其变化，如何通过人口再生产、家庭迁移和一般均衡反馈，改变劳动力在 $N$ 个地区之间的份额？} 劳动力人数和工时总量继续参与人口与市场出清，但不单独以全国劳动增加多少作为主要结论。该调整改变被解释对象和反事实结果口径；生育外生、资本积累、多部门结构、成本变量与劳动市场出清等设定沿用现有模型。
+
+\begin{enumerate}
+ \item \textbf{家庭与生育。} 生育率为外生给定路径；工人不选择生育数量、不持有金融资产，工资用于当期家庭消费。儿童消费和照料负担在地区内共享，儿童随监护家庭迁移；孤儿在本地监护家庭间重新匹配。
+ \item \textbf{人口与劳动。} 新生儿经过 $J$ 年后进入成年劳动人口；儿童存活率 $s^C_a$ 和成年存活率 $s_A$ 跨地区相同。成年工人全部就业，不分技能、成人年龄和退休状态；每人工时由抚养负担决定，未引入闲暇最优化。
+ \item \textbf{迁移。} 成年工人进行前瞻性的动态离散地区选择；儿童和新成年者继承监护家庭的条件迁移概率。迁移成本为双边效用成本，不是现金搬家支出。
+ \item \textbf{生产与贸易。} 多部门、完全竞争、规模报酬不变，使用资本、劳动及部门复合中间品。地区品种采用 CES 组合，贸易摩擦为冰山成本；生产率和舒适度外生。
+ \item \textbf{资本与金融。} 每地一个不供劳动、不迁移的代表性资本所有者账户，持有本地资本并选择消费与非负投资。资本在本地部门间可配置，已安装资本不能跨地区搬迁；没有跨地区资产交易、财政转移、政府、税收和国外。
+ \item \textbf{均衡与预期。} 工资和资本租金在同一地区的部门间相同；劳动、资本及商品市场逐期出清；外生路径完美预见。工人与资本所有者的偏好和预算分别处理。
+\end{enumerate}
+所有者为归一化的所有权账户，不额外加入工人家庭人口队列。由于没有显式退休和养老模块，本稿人口不直接等于现实全部常住人口，校准时须统一成年工人及儿童的统计口径。
+
+主体划分沿用两地区原稿，其文献背景见 \citet{kleinman2023dynamic}；贸易与动态劳动重配的相关框架见 \citet{caliendo2019trade}。人口队列与抚养机制仍为本稿的具体设定。地区数扩展不自动赋予模型整体均衡的存在性、唯一性或数值收敛性。
+
+\subsection{时序与封闭经济范围}
+每期依次进行：继承成年工人、已有儿童队列及资本；根据外生生育率产生新生儿；生产、消费和投资；存活、年龄推进及期末迁移；形成下一期人口和资本。迁移到达者从下一期开始在目的地区劳动。
+
+$N$ 个地区共同构成封闭经济，可覆盖研究国家的全部地区，也可将未单列的国内地区合并为“其余地区”。若研究地区之外仍存在未记账的商品和人口流动，应先扩展地区集合或改写相应闭合；不能将这些流量直接删除后仍维持封闭均衡。
+
+\section{外生生育率、人口基础与劳动投入}
+\label{sec:lg-fertility}
+
+\subsection{出生流量与生育率口径}
+给定每名成年工人每年对应的新生儿数 $f_{it}\geq0$，出生为
+\begin{equation}
+ B_{it}=f_{it}n_{it},\qquad H_{i,0,t}=B_{it}.
+ \label{eq:lg-birth}
+\end{equation}
+$\{f_{it}\}_{i,t}$ 为外生路径。将全年出生集中在期初，是与两地区稿相同的年度离散化约定；零岁队列由当期出生决定，而不是另一个独立初始状态。
+
+若原始数据为育龄女性年龄别生育率 $g_{i,a,t}$ 和相应女性人数 $F_{i,a,t}$，令 $\mathcal A_F$ 为相应的育龄女性年龄集合，则先换算
+\begin{equation}
+ B^{\mathrm{data}}_{it}=\sum_{a\in\mathcal A_F}g_{i,a,t}F_{i,a,t},\qquad
+ f_{it}=\frac{B^{\mathrm{data}}_{it}}{n^{\mathrm{data}}_{it}}.
+ \label{eq:lg-fertility-data}
+\end{equation}
+千分比要转换为每人单位，并核对年龄组宽度。总和生育率、粗出生率和本模型每名工人年出生数具有不同分母与时间含义，不能直接替换。本稿将换算后的 $f_{it}$ 路径作为外生输入；若改以女性年龄别生育率作为外生对象，则需另行建模女性年龄结构。
+
+\subsection{儿童抚养与效率劳动}
+记 $H_{i,a,t}$ 为期初地区 $i$ 的年龄 $a$ 儿童人数。儿童在 $J\geq2$ 岁进入成年劳动人口，年度示例可取 $J=18$。定义
+\begin{equation}
+ D_{it}=\sum_{a=0}^{J-1}H_{i,a,t},\qquad
+ d_{it}=\frac{D_{it}}{n_{it}},\qquad
+ h_{it}=1-\ell d_{it}>0,\quad \ell\geq0.
+ \label{eq:lg-dependency}
+\end{equation}
+$D_{it}$ 是儿童数，$d_{it}$ 是平均抚养比，$\ell$ 是每名儿童占用的平均劳动时间。效率劳动供给为
+\begin{equation}
+ L_{it}=h_{it}n_{it}=n_{it}-\ell D_{it}.
+ \label{eq:lg-labor-supply}
+\end{equation}
+成年工人就业人数为 $n_{it}$，就业时间总量为 $L_{it}$，二者应分别报告。取 $\ell=0$ 即退回每人一单位劳动的特例；若 $\ell>0$，输入及均衡路径均须满足 $\ell d_{it}<1$。
+
+设儿童消费的成人等价权重为 $\chi\geq0$，每名工人的成人等价消费为 $c^w_{it}$。记 $w_{it}$ 为单位效率劳动工资、$\pc_{it}$ 为当地消费复合品价格；消费组合和价格构造在第\ref{sec:lg-trade}节给出。工人家庭预算为
+\begin{equation}
+ \pc_{it}(n_{it}+\chi D_{it})c^w_{it}=w_{it}L_{it},\qquad
+ c^w_{it}=\frac{w_{it}(1-\ell d_{it})}
+ {\pc_{it}(1+\chi d_{it})}.
+ \label{eq:lg-worker-budget}
+\end{equation}
+抚养时间和儿童消费分别通过 $h_{it}$ 与成人等价消费进入预算。全部工人工资支出已经包含儿童消费，商品市场不再重复增加一份育儿消费。
+
+\section{劳动力空间分布的定义与总量分解}
+\label{sec:lg-spatial-distribution}
+
+\subsection{成年劳动力人数份额与效率劳动份额}
+定义全国成年工人和效率劳动总量
+\begin{equation}
+ n_t^{\mathrm{tot}}=\sum_{i=1}^Nn_{it},\qquad
+ L_t^{\mathrm{tot}}=\sum_{i=1}^NL_{it}.
+\end{equation}
+由于基准中成年工人全部就业，本稿以\textbf{成年劳动力人数的地区份额}衡量主要的空间分布：
+\begin{equation}
+ \lambda^n_{it}=\frac{n_{it}}{n_t^{\mathrm{tot}}},\qquad
+ \sum_i\lambda^n_{it}=1.
+ \label{eq:lg-headcount-spatial-share}
+\end{equation}
+补充报告\textbf{效率劳动的地区份额}
+\begin{equation}
+ \lambda^L_{it}=\frac{L_{it}}{L_t^{\mathrm{tot}}},\qquad
+ \sum_i\lambda^L_{it}=1.
+ \label{eq:lg-effective-spatial-share}
+\end{equation}
+人数份额反映工人分布在哪里，效率劳动份额还包含不同地区照料时间的差异。定义全国平均可供工时 $\bar h_t=L_t^{\mathrm{tot}}/n_t^{\mathrm{tot}}=\sum_i\lambda^n_{it}h_{it}$，则
+\begin{equation}
+ \lambda^L_{it}=\frac{\lambda^n_{it}h_{it}}{\bar h_t}.
+ \label{eq:lg-two-spatial-shares}
+\end{equation}
+若 $\ell=0$，两种地区份额相同；若各地工时不同，仅有本地工时变化就可能改变效率劳动份额，而成年工人人数份额未必改变。
+
+\subsection{地区与部门的联合分布}
+保留多部门结构。记 $L_{ist}$ 为地区 $i$ 的部门 $s$ 使用的效率劳动，其需求由后文企业问题决定。在本地劳动市场出清时 $\sum_sL_{ist}=L_{it}$，令 $\lambda^L_{ist}=L_{ist}/L_{it}$ 为地区内部门劳动份额，定义地区部门联合份额
+\begin{equation}
+ \Lambda^L_{ist}=\frac{L_{ist}}{L_t^{\mathrm{tot}}}
+ =\lambda^L_{it}\lambda^L_{ist},\qquad
+ \sum_s\Lambda^L_{ist}=\lambda^L_{it},\quad
+ \sum_i\sum_s\Lambda^L_{ist}=1.
+ \label{eq:lg-region-sector-joint-share}
+\end{equation}
+三个量具有不同口径：$\lambda^L_{it}$ 是地区占全国的份额，$\lambda^L_{ist}$ 是部门占本地的份额，$\Lambda^L_{ist}$ 是地区部门占全国的份额。部门间重配可以在本地人数不变时发生，不能将其自动解释为跨地区迁移。
+
+\subsection{规模与空间份额变化的一般数量关系}
+由 $n_{it}=\lambda^n_{it}n_t^{\mathrm{tot}}$ 和 $L_{it}=\lambda^L_{it}L_t^{\mathrm{tot}}$，先在不指定政策情景的条件下讨论数量关系。以下 $\dd$ 为局部全微分，不表示一期时间推进，也尚不特指两条政策路径的比较。乘积法则给出
+\begin{align}
+ \dd n_{it}&=\lambda^n_{it}\dd n_t^{\mathrm{tot}}
+ +n_t^{\mathrm{tot}}\dd\lambda^n_{it},\\
+ \dd L_{it}&=\lambda^L_{it}\dd L_t^{\mathrm{tot}}
+ +L_t^{\mathrm{tot}}\dd\lambda^L_{it}.
+ \label{eq:lg-scale-distribution-differential}
+\end{align}
+第一项为沿当前份额分摊的全国规模变化，第二项为地区相对权重改变。等价地，
+\begin{align}
+ \dd\lambda^n_{it}&=\frac{\dd n_{it}-\lambda^n_{it}\dd n_t^{\mathrm{tot}}}{n_t^{\mathrm{tot}}},\\
+ \dd\lambda^L_{it}&=\frac{\dd L_{it}-\lambda^L_{it}\dd L_t^{\mathrm{tot}}}{L_t^{\mathrm{tot}}}.
+ \label{eq:lg-general-share-differential}
+\end{align}
+份额加总为一意味着 $\sum_i\dd\lambda^n_{it}=\sum_i\dd\lambda^L_{it}=0$。各地人数同比例增加时，人数份额不变；某地增长慢于全国时，其人数可以增加而份额下降。这些是份额定义的代数性质，尚不使用家庭、企业或市场出清条件；两条均衡路径的有限变化比较留到正式反事实章节。
+
+对前文人数份额与工时份额的水平关系求对数微分，还得到
+\begin{equation}
+ \dd\log\lambda^L_{it}=\dd\log\lambda^n_{it}+\dd\log h_{it}-\dd\log\bar h_t.
+ \label{eq:lg-share-hours-differential}
+\end{equation}
+这一区分保留了工时差异的作用，同时不把全国总量固定为常数。
+
+\subsection{单条分布的集中度}
+可用以下指标辅助描述空间结果：
+\begin{equation}
+ \mathrm{HHI}^n_t=\sum_i(\lambda^n_{it})^2,\qquad
+ \mathrm{HHI}^L_t=\sum_i(\lambda^L_{it})^2,
+ \label{eq:lg-concentration-index}
+\end{equation}
+这些指标描述同一期单条分布的不均衡程度，取值位于 $[1/N,1]$。它们不要求先定义两个比较情景，也不能直接当作迁移人数或迁移率。地区份额还会因相对成年进入量不同而改变，集中度变化的方向需由后文均衡决定。两条分布之间的差异指标在反事实路径正式定义后再引入。
+
+\section{多地区迁移网络、人口队列与份额推进}
+\label{sec:lg-demography}
+
+\subsection{迁移矩阵与地区更新}
+令 $m_{ij,t}$ 为期末从地区 $i$ 到地区 $j$ 的条件迁移概率，$m_{ii,t}$ 为留存概率。定义
+\begin{equation}
+ \mathsf M_t=[m_{ij,t}]_{N\times N},\qquad
+ m_{ij,t}\geq0,\quad\sum_{j=1}^Nm_{ij,t}=1,\qquad
+ \mathsf U_t=\mathsf M_t^{\mathsf T}.
+ \label{eq:lg-matrix-migration}
+\end{equation}
+$\mathsf M_t$ 的行对应起点、列对应终点，故 $\mathsf M_t\ones=\ones$；人口使用列向量时应左乘其转置 $\mathsf U_t$，且 $\ones^{\mathsf T}\mathsf U_t=\ones^{\mathsf T}$。
+
+给定共同存活率 $s_A\in(0,1)$、$s^C_a\in(0,1]$，儿童和成年工人更新为
+\begin{align}
+ H_{j,a+1,t+1}&=\sum_{i=1}^Nm_{ij,t}s^C_aH_{i,a,t},
+ \qquad a=0,\ldots,J-2,\label{eq:lg-child-transition}\\
+ n_{j,t+1}&=\sum_{i=1}^Nm_{ij,t}
+ \left(s_An_{it}+s^C_{J-1}H_{i,J-1,t}\right).
+ \label{eq:lg-adult-transition}
+\end{align}
+定义 $\widetilde n_{it}=s_An_{it}+s^C_{J-1}H_{i,J-1,t}$，则地区成人存量可分解为
+\begin{equation}
+ n_{i,t+1}=\widetilde n_{it}
+ +\underbrace{\sum_{j\neq i}m_{ji,t}\widetilde n_{jt}}_{\text{迁入}}
+ -\underbrace{(1-m_{ii,t})\widetilde n_{it}}_{\text{迁出}}.
+ \label{eq:lg-net-migration}
+\end{equation}
+新成年者沿用监护家庭的迁移概率，没有引入独立的青年迁移模型。新生儿从年龄零开始推进，在 $t+J$ 才进入劳动人口，而非 $t+1$。
+
+\subsection{人数空间份额的运动与成年进入、净迁移分解}
+定义本期末迁移前的新增成年人数与成人净迁移
+\begin{align}
+ e_{it}&=s^C_{J-1}H_{i,J-1,t},\qquad
+ e_t^{\mathrm{tot}}=\sum_ie_{it},\\
+ \mathrm{NM}_{it}&=\sum_{j\neq i}m_{ji,t}\widetilde n_{jt}
+ -\sum_{j\neq i}m_{ij,t}\widetilde n_{it},\qquad
+ \sum_i\mathrm{NM}_{it}=0.
+ \label{eq:lg-entrant-net-migration}
+\end{align}
+于是
+\begin{equation}
+ n_{i,t+1}=s_An_{it}+e_{it}+\mathrm{NM}_{it},\qquad
+ n_{t+1}^{\mathrm{tot}}=s_An_t^{\mathrm{tot}}+e_t^{\mathrm{tot}}.
+\end{equation}
+用全国总量归一化并减去本期份额，得到空间分布的核心运动方程
+\begin{equation}
+ \lambda^n_{i,t+1}-\lambda^n_{it}
+ =\frac{e_{it}-\lambda^n_{it}e_t^{\mathrm{tot}}}
+ {n_{t+1}^{\mathrm{tot}}}
+ +\frac{\mathrm{NM}_{it}}{n_{t+1}^{\mathrm{tot}}}.
+ \label{eq:lg-spatial-share-law}
+\end{equation}
+第一项是\textbf{相对成年进入效应}：本地新增成年人数超过按原有人数份额分摊的全国新增成年人数时，地区份额上升。第二项是\textbf{净迁移效应}。共同成人存活率不单独出现在份额变化的分子中，因为它同比例作用于各地区原有成年人。两项分别按地区加总为零。
+
+$e_{it}$ 按儿童成年前所在地区记录，已包含成长期间的随迁；$\mathrm{NM}_{it}$ 是本期末存活成人与新成年者的净迁移。因此两项描述本期人口记账，不能将全部份额变化都归为迁移，也不能将成年进入地区直接视为出生地区。
+
+令 $\bm\lambda^n_t=(\lambda^n_{1t},\ldots,\lambda^n_{Nt})^{\mathsf T}$、$\bm e_t=(e_{1t},\ldots,e_{Nt})^{\mathsf T}$，等价的向量形式为
+\begin{equation}
+ \bm\lambda^n_{t+1}
+ =\frac{\mathsf U_t\left(s_A\bm\lambda^n_t+\bm e_t/n_t^{\mathrm{tot}}\right)}
+ {s_A+e_t^{\mathrm{tot}}/n_t^{\mathrm{tot}}}.
+ \label{eq:lg-vector-share-law}
+\end{equation}
+它允许全国成年人口增长或收缩；归一化只用于度量地区分布，不替代原有水平人口方程。
+
+\subsection{人口动态的向量与分块矩阵形式}
+定义 $N$ 维列向量
+\begin{align}
+ \bm n_t&=(n_{1t},\ldots,n_{Nt})^{\mathsf T},\qquad
+ \bm L_t=(L_{1t},\ldots,L_{Nt})^{\mathsf T},\\
+ \bm H_{a,t}&=(H_{1,a,t},\ldots,H_{N,a,t})^{\mathsf T},\\
+ \bm f_t&=(f_{1t},\ldots,f_{Nt})^{\mathsf T},\qquad
+ \mathsf F_t=\diag(\bm f_t).
+\end{align}
+则
+\begin{align}
+ \bm H_{0,t}&=\mathsf F_t\bm n_t,\label{eq:lg-vector-birth}\\
+ \bm H_{a+1,t+1}&=s^C_a\mathsf U_t\bm H_{a,t},
+ \qquad a=0,\ldots,J-2,\label{eq:lg-vector-child}\\
+ \bm n_{t+1}&=\mathsf U_t
+ \left(s_A\bm n_t+s^C_{J-1}\bm H_{J-1,t}\right).
+ \label{eq:lg-vector-adult}
+\end{align}
+将继承人口状态排列为
+\begin{equation}
+ \bm z_t=(\bm n_t^{\mathsf T},\bm H_{1,t}^{\mathsf T},\ldots,
+ \bm H_{J-1,t}^{\mathsf T})^{\mathsf T}\in\mathbb R_+^{NJ},
+\end{equation}
+则条件于迁移矩阵和生育路径，$\bm z_{t+1}=\mathsf A_t\bm z_t$。$N\times N$ 分块矩阵 $\mathsf A_t$ 的非零块为
+\begin{align}
+ [\mathsf A_t]_{0,0}&=s_A\mathsf U_t,&
+ [\mathsf A_t]_{0,J-1}&=s^C_{J-1}\mathsf U_t,\\
+ [\mathsf A_t]_{1,0}&=s^C_0\mathsf U_t\mathsf F_t,&
+ [\mathsf A_t]_{a+1,a}&=s^C_a\mathsf U_t,
+ \quad a=1,\ldots,J-2.
+ \label{eq:lg-demographic-blocks}
+\end{align}
+其余块为零，分块索引从 $0$ 开始；$J=2$ 时最后一组为空。这是\textbf{条件线性}表示，因为 $\mathsf M_t$ 在一般均衡中内生依赖价格、抚养负担及未来价值。
+
+\subsection{迁移守恒和全国人口账户}
+\begin{proposition}[任意地区数下的全国人口守恒]
+定义全国成年工人 $n_t^{\mathrm{tot}}=\ones^{\mathsf T}\bm n_t$、年龄 $a$ 儿童 $H_{a,t}^{\mathrm{tot}}=\ones^{\mathsf T}\bm H_{a,t}$，则
+\begin{align}
+ n_{t+1}^{\mathrm{tot}}&=s_An_t^{\mathrm{tot}}+s^C_{J-1}H_{J-1,t}^{\mathrm{tot}},\\
+ H_{a+1,t+1}^{\mathrm{tot}}&=s^C_aH_{a,t}^{\mathrm{tot}}.
+ \label{eq:lg-national-pop}
+\end{align}
+国内迁移不直接改变全国人数。
+\end{proposition}
+\begin{proof}
+在式\eqref{eq:lg-vector-child}、\eqref{eq:lg-vector-adult}两侧左乘 $\ones^{\mathsf T}$，使用 $\ones^{\mathsf T}\mathsf U_t=\ones^{\mathsf T}$。
+\end{proof}
+记全国出生流量 $B_t^{\mathrm{tot}}=\sum_iB_{it}$。若 $\mathcal P_t=n_t^{\mathrm{tot}}+\sum_{a=0}^{J-1}H_{a,t}^{\mathrm{tot}}$，则沿用期初出生约定，有
+\begin{equation}
+ \mathcal P_{t+1}-\mathcal P_t=B_{t+1}^{\mathrm{tot}}
+ -(1-s_A)n_t^{\mathrm{tot}}-\sum_{a=0}^{J-1}(1-s^C_a)H_{a,t}^{\mathrm{tot}}.
+ \label{eq:lg-total-pop-account}
+\end{equation}
+迁移仍可能\emph{间接}影响全国未来出生。采用式\eqref{eq:lg-headcount-spatial-share}定义的成年劳动力地区份额，则
+\begin{equation}
+ B_t^{\mathrm{tot}}=\sum_i f_{it}n_{it}
+ =n_t^{\mathrm{tot}}\bar f_t,\qquad
+ \bar f_t=\sum_i\lambda^n_{it}f_{it}.
+ \label{eq:lg-composition-fertility}
+\end{equation}
+各地 $f_{it}$ 固定时，人口权重改变也可能改变全国平均出生强度。若所有地区 $f_{it}$ 相同，这一空间构成效应消失。
+
+\section{多地区商品贸易与消费、投资价格}
+\label{sec:lg-trade}
+
+\subsection{CES 部门组合与冰山成本}
+各地各部门生产一个地区特定品种。$x_{ij,s,t}$ 表示从 $i$ 运至 $j$ 并实际到达的部门 $s$ 数量。部门复合品为
+\begin{equation}
+ X_{jst}=\left[\sum_{i=1}^N\zeta_{is}^{1/\sigma_s}
+ x_{ij,s,t}^{(\sigma_s-1)/\sigma_s}\right]^{\sigma_s/(\sigma_s-1)},
+ \quad \sigma_s>1,\quad\zeta_{is}>0,\quad\sum_i\zeta_{is}=1.
+ \label{eq:lg-ces}
+\end{equation}
+其中 $\sigma_s$ 为同一部门不同来源地区品种之间的替代弹性，$\zeta_{is}$ 为来源地区 $i$ 的部门 $s$ 品种权重。
+出厂价为 $p_{ist}$，双边贸易成本及到岸价格为
+\begin{equation}
+ \tau_{ij,s,t}\geq1,\qquad\tau_{ii,s,t}=1,\qquad
+ p^d_{ij,s,t}=\tau_{ij,s,t}p_{ist}.
+ \label{eq:lg-trade-cost}
+\end{equation}
+$\tau_{ij,s,t}$ 是保留为符号的外生变量，可随起点、终点、部门和时间变化，且不要求 $\tau_{ij,s,t}=\tau_{ji,s,t}$。交付一单位商品需发出 $\tau_{ij,s,t}$ 单位；冰山耗用不产生税收或运输利润。
+
+对式\eqref{eq:lg-ces}做支出最小化，任意来源地 $i,k$ 的需求比率为
+\begin{equation}
+ \frac{x_{ij,s,t}}{x_{kj,s,t}}=\frac{\zeta_{is}}{\zeta_{ks}}
+ \left(\frac{\tau_{ij,s,t}p_{ist}}{\tau_{kj,s,t}p_{kst}}\right)^{-\sigma_s}.
+\end{equation}
+故部门复合品价格与来源份额为
+\begin{align}
+ P_{jst}&=\left[\sum_{i=1}^N\zeta_{is}
+ (\tau_{ij,s,t}p_{ist})^{1-\sigma_s}\right]^{1/(1-\sigma_s)},
+ \label{eq:lg-sector-price}\\
+ \pi_{ij,s,t}&=\frac{\zeta_{is}(\tau_{ij,s,t}p_{ist})^{1-\sigma_s}}
+ {\sum_{k=1}^N\zeta_{ks}(\tau_{kj,s,t}p_{kst})^{1-\sigma_s}},\qquad
+ \sum_{i=1}^N\pi_{ij,s,t}=1.
+ \label{eq:lg-trade-share}
+\end{align}
+对每个部门定义 $\Pi_t^s=[\pi_{ij,s,t}]$，则\textbf{列}对应目的地的采购来源分布，列和为一。这与迁移矩阵 $\mathsf M_t$ 的行归一化不同。
+
+若目的地支出为 $E_{jst}=P_{jst}X_{jst}$，则
+\begin{equation}
+ x_{ij,s,t}=\frac{\pi_{ij,s,t}E_{jst}}{\tau_{ij,s,t}p_{ist}},\qquad
+ \mathcal T_{ij,s,t}=\pi_{ij,s,t}E_{jst}.
+ \label{eq:lg-trade-value}
+\end{equation}
+$\mathcal T_{ij,s,t}$ 是生产者为该目的地提供、包含冰山耗用产值的销售额。
+
+\subsection{最终消费与资本形成的部门组合}
+沿用共同消费权重 $\omega_s>0$ 和投资权重 $\eta_s>0$，且二者分别加总为一。消费与投资的组合及其对偶价格为
+\begin{align}
+ C&=\prod_{s=1}^S\left(\frac{C_s}{\omega_s}\right)^{\omega_s},&
+ \pc_{it}&=\prod_{s=1}^SP_{ist}^{\omega_s},&
+ P_{ist}C_s&=\omega_s\pc_{it}C,
+ \label{eq:lg-consumption-price}\\
+ I_{it}&=\prod_{s=1}^S\left(\frac{I_{ist}}{\eta_s}\right)^{\eta_s},&
+ \invp_{it}&=\prod_{s=1}^SP_{ist}^{\eta_s},&
+ P_{ist}I_{ist}&=\eta_s\invp_{it}I_{it}.
+ \label{eq:lg-investment-price}
+\end{align}
+一单位投资复合品转化为一单位本地安装资本。一般 $\invp_{it}\neq\pc_{it}$，且不同地区的实际购买力不必相同。
+
+\section{多部门生产与本地要素市场出清}
+\label{sec:lg-production}
+
+\subsection{生产技术与单位成本}
+记 $Y_{ist}$ 为地区 $i$ 的部门 $s$ 出厂实物总产量，$K_{ist}$ 为部门资本投入，$r_{it}$ 为本地单位资本租金；部门效率劳动仍记为 $L_{ist}$。生产技术为
+\begin{equation}
+ Y_{ist}=A_{ist}K_{ist}^{\alpha_s\nu_s}L_{ist}^{(1-\alpha_s)\nu_s}
+ \prod_{q=1}^SM_{i,sq,t}^{\gamma_{sq}},\qquad
+ \nu_s=1-\sum_{q=1}^S\gamma_{sq}>0.
+ \label{eq:lg-production}
+\end{equation}
+$M_{i,sq,t}$ 是使用部门 $s$ 购买的来源部门 $q$ 复合投入。$0<\alpha_s<1$ 是资本在增加值中的份额，$\gamma_{sq}\geq0$ 是中间投入弹性。$\alpha_s,\nu_s,\gamma_{sq}$ 跨地区共同，$A_{ist}>0$ 可随地区、部门和时间变化，未加入新的内生集聚或技术扩散假设。
+
+令 $a_s=\alpha_s\nu_s$、$b_s=(1-\alpha_s)\nu_s$，企业最小化 $rK+wL+\sum_qP_qM_q$。成本最小化的一阶条件使各投入支出份额等于其产出弹性，故单位成本为
+\begin{equation}
+ c^{\mathrm{unit}}_{ist}=\frac{1}{A_{ist}}
+ \left(\frac{r_{it}}{a_s}\right)^{a_s}
+ \left(\frac{w_{it}}{b_s}\right)^{b_s}
+ \prod_{q:\gamma_{sq}>0}\left(\frac{P_{iqt}}{\gamma_{sq}}\right)^{\gamma_{sq}}.
+ \label{eq:lg-unit-cost}
+\end{equation}
+$\gamma_{sq}=0$ 的投入项省略。完全竞争、规模报酬不变给出
+\begin{equation}
+ p_{ist}=c^{\mathrm{unit}}_{ist},\qquad R_{ist}=p_{ist}Y_{ist}.
+ \label{eq:lg-zero-profit}
+\end{equation}
+要素需求与中间需求为
+\begin{equation}
+ w_{it}L_{ist}=b_sR_{ist},\qquad
+ r_{it}K_{ist}=a_sR_{ist},\qquad
+ P_{iqt}M_{i,sq,t}=\gamma_{sq}R_{ist}.
+ \label{eq:lg-factor-demand}
+\end{equation}
+$R_{ist}$ 是总产值，$\nu_sR_{ist}$ 才是增加值。
+
+\subsection{劳动、资本及部门就业份额}
+劳动和资本在本地部门间可配置，市场出清要求
+\begin{equation}
+ \sum_{s=1}^SL_{ist}=h_{it}n_{it},\qquad
+ \sum_{s=1}^SK_{ist}=K_{it},\qquad i=1,\ldots,N.
+ \label{eq:lg-factor-clearing}
+\end{equation}
+其价值形式为
+\begin{equation}
+ w_{it}h_{it}n_{it}=\sum_sb_sR_{ist},\qquad
+ r_{it}K_{it}=\sum_sa_sR_{ist}.
+ \label{eq:lg-factor-clearing-value}
+\end{equation}
+因此部门劳动份额为
+\begin{equation}
+ \lambda^L_{ist}=\frac{L_{ist}}{L_{it}}
+ =\frac{b_sR_{ist}}{\sum_qb_qR_{iqt}},\qquad\sum_s\lambda^L_{ist}=1.
+ \label{eq:lg-sector-employment}
+\end{equation}
+生育变化可以同时改变地区总劳动、地区间人口分布和本地部门劳动份额。劳动市场出清本身不要求地区工资相等，也不要求各部门劳动份额固定。
+
+\section{前瞻性地区选择与内生迁移概率}
+\label{sec:lg-migration}
+
+\subsection{工人价值函数}
+设舒适度 $a^w_{it}>0$，成年工人的当期效用为
+\begin{equation}
+ u^w_{it}=\log(a^w_{it}c^w_{it})
+ =\log a^w_{it}+\log\frac{w_{it}}{\pc_{it}}
+ +\log(1-\ell d_{it})-\log(1+\chi d_{it}).
+ \label{eq:lg-worker-flow}
+\end{equation}
+迁移成本保留为
+\begin{equation}
+ \kappa_{ij,t}\geq0,\qquad\kappa_{ii,t}=0,
+ \label{eq:lg-migration-cost}
+\end{equation}
+以效用单位计量，不预设方向对称或具体数值，不从家庭货币预算中另扣搬家费。折现因子为 $\beta_w\in(0,1)$，死亡后的效用为零，无额外后代利他效用。
+
+存活工人获得目的地独立、尺度为 $\vartheta>0$、均值中心化的 I 型极值偏好冲击，迁移成本和冲击在下一期存活条件下兑现。完美预见的价值函数为
+\begin{align}
+ V_{it}&=u^w_{it}+\beta_ws_A\E_\epsilon
+ \max_{j\in\mathcal R}\{V_{j,t+1}-\kappa_{ij,t}+\epsilon_{j,t}\}\\
+ &=u^w_{it}+\beta_ws_A\vartheta
+ \log\left\{\sum_{j=1}^N\exp\left[
+ \frac{V_{j,t+1}-\kappa_{ij,t}}{\vartheta}\right]\right\}.
+ \label{eq:lg-bellman}
+\end{align}
+$s_A$ 只乘在工人的期望延续效用中；条件迁移概率中不再重复乘存活率。儿童年龄不改变条件迁移概率，沿用两地区原稿的家庭汇总假设。
+
+\subsection{多项 Logit 与成本识别关系}
+由极值分布可得
+\begin{equation}
+ m_{ij,t}=\frac{\exp[(V_{j,t+1}-\kappa_{ij,t})/\vartheta]}
+ {\sum_{k=1}^N\exp[(V_{k,t+1}-\kappa_{ik,t})/\vartheta]},
+ \qquad\sum_jm_{ij,t}=1.
+ \label{eq:lg-migration-share}
+\end{equation}
+基准中有限成本和有限价值使各选择概率为正。给定价值路径与其他成本，
+\begin{align}
+ \frac{\partial m_{ij,t}}{\partial\kappa_{ij,t}}
+ &=-\frac{m_{ij,t}(1-m_{ij,t})}{\vartheta},\\
+ \frac{\partial m_{ik,t}}{\partial\kappa_{ij,t}}
+ &=\frac{m_{ik,t}m_{ij,t}}{\vartheta},\qquad k\neq j.
+\end{align}
+因此前往一个目的地的成本下降会改变所有备选地区的概率，而非仅改变一条人口流。在一般均衡中，还须计入各地区价值的变化。
+
+与原地留存比较，得到
+\begin{equation}
+ \vartheta\log\frac{m_{ij,t}}{m_{ii,t}}
+ =V_{j,t+1}-V_{i,t+1}-\kappa_{ij,t}.
+ \label{eq:lg-migration-identification}
+\end{equation}
+观察到迁移份额并不足以同时识别所有迁移成本、舒适度与偏好尺度；其结构估计需要价格收入信息、归一化及额外识别限制。
+
+\section{资本所有者的消费、投资与动态最优条件}
+\label{sec:lg-capital}
+
+\subsection{跨期问题与资源约束}
+地区 $i$ 的价格接受型资本所有者选择消费 $C^k_{it}>0$ 与投资 $I_{it}\geq0$：
+\begin{equation}
+ \begin{gathered}
+ \max\sum_{t=0}^{\infty}\beta_k^tU(C^k_{it}),\\
+ U(C)=\begin{cases}
+ (C^{1-\rho}-1)/(1-\rho),&\rho\neq1,\\
+ \log C,&\rho=1,
+ \end{cases}
+ \quad 0<\beta_k<1,\quad\rho>0,
+ \end{gathered}
+ \label{eq:lg-capital-objective}
+\end{equation}
+满足
+\begin{align}
+ \pc_{it}C^k_{it}+\invp_{it}I_{it}&=r_{it}K_{it},
+ \label{eq:lg-capital-budget}\\
+ K_{i,t+1}&=(1-\delta)K_{it}+I_{it},\qquad0<\delta<1.
+ \label{eq:lg-capital-law}
+\end{align}
+旧资本不能即时拆解为商品，但零投资时存量仍随折旧下降。所有者只使用本地资本收入融资，不向其他地区借贷；不同地区的转型期资本回报不必相等。
+
+\subsection{欧拉方程与非负投资角点}
+记名义收入边际效用为 $\lambda_{it}$、期初安装资本的边际价值为 $b^K_{it}$。消费一阶条件、包络条件和投资条件为
+\begin{align}
+ \lambda_{it}&=\frac{(C^k_{it})^{-\rho}}{\pc_{it}},
+ \label{eq:lg-lambda}\\
+ b^K_{it}&=\lambda_{it}r_{it}+\beta_k(1-\delta)b^K_{i,t+1},
+ \label{eq:lg-capital-envelope}\\
+ 0\leq I_{it}&\ \perp\ \lambda_{it}\invp_{it}-\beta_kb^K_{i,t+1}\geq0.
+\end{align}
+其中互补关系 $x\perp y$ 表示 $x,y\geq0$ 且 $xy=0$。定义期末新增安装资本的当期名义影子价值
+\begin{equation}
+ q^K_{it}=\frac{\beta_kb^K_{i,t+1}}{\lambda_{it}}.
+\end{equation}
+得到对所有投资状态均适用的系统
+\begin{align}
+ q^K_{it}&=\beta_k\frac{\lambda_{i,t+1}}{\lambda_{it}}
+ \left[r_{i,t+1}+(1-\delta)q^K_{i,t+1}\right],
+ \label{eq:lg-q-euler}\\
+ 0\leq I_{it}&\ \perp\ \invp_{it}-q^K_{it}\geq0.
+ \label{eq:lg-investment-complementarity}
+\end{align}
+若当前与下一期投资均严格为正，则 $q^K_{it}=\invp_{it}$、$q^K_{i,t+1}=\invp_{i,t+1}$，故
+\begin{equation}
+ \frac{\invp_{it}}{\pc_{it}}(C^k_{it})^{-\rho}
+ =\beta_k\frac{(C^k_{i,t+1})^{-\rho}}{\pc_{i,t+1}}
+ \left[r_{i,t+1}+(1-\delta)\invp_{i,t+1}\right].
+ \label{eq:lg-capital-euler-interior}
+\end{equation}
+未来零投资角点下不能用 $\invp_{i,t+1}$ 任意替换影子价值。跨期最优路径还要求
+\begin{equation}
+ \lim_{T\to\infty}\beta_k^T\lambda_{iT}q^K_{iT}K_{i,T+1}=0.
+ \label{eq:lg-tvc}
+\end{equation}
+本稿工人没有储蓄资产，因而不额外给工人施加储蓄欧拉方程。
+
+\section{商品出清、投入产出网络与金融闭合}
+\label{sec:lg-market}
+
+\subsection{部门支出与来源地销售}
+全部最终消费支出为
+\begin{equation}
+ F^C_{it}=w_{it}L_{it}+\pc_{it}C^k_{it}.
+ \label{eq:lg-final-consumption}
+\end{equation}
+部门 $s$ 在目的地 $j$ 的总购买支出由消费、投资和中间投入组成：
+\begin{equation}
+ E_{jst}=\omega_sF^C_{jt}+\eta_s\invp_{jt}I_{jt}
+ +\sum_{q=1}^S\gamma_{qs}R_{jqt}.
+ \label{eq:lg-sector-expenditure}
+\end{equation}
+最后一项使用 $\gamma_{qs}$：使用部门 $q$ 购买部门 $s$ 复合投入。对每个生产地区和部门，收入与实物出清分别为
+\begin{align}
+ R_{ist}&=\sum_{j=1}^N\pi_{ij,s,t}E_{jst},
+ \label{eq:lg-revenue-clearing}\\
+ Y_{ist}&=\sum_{j=1}^N\tau_{ij,s,t}x_{ij,s,t}.
+ \label{eq:lg-physical-clearing}
+\end{align}
+第二式含交付过程中消耗的数量；不能将出厂产量直接等于到达数量之和。
+
+\subsection{维度为 NS 的投入产出系统}
+将向量按 $(i,s)$ 排列，定义 $NS\times NS$ 矩阵
+\begin{align}
+ [\mathsf B_t]_{(i,s),(j,q)}&=\mathbf1\{s=q\}\pi_{ij,s,t},\\
+ [\mathsf G]_{(j,s),(k,q)}&=\mathbf1\{j=k\}\gamma_{qs}.
+\end{align}
+令 $\bm R_t$ 为总产值向量，$\bm E_t$ 为部门总支出向量，最终需求向量元素为
+\begin{equation}
+ [\bm F_t]_{(j,s)}=\omega_sF^C_{jt}+\eta_s\invp_{jt}I_{jt}.
+\end{equation}
+这里 $\bm F_t$ 与人口生育率对角矩阵 $\mathsf F_t$ 不同。商品块为
+\begin{align}
+ \bm E_t&=\bm F_t+\mathsf G\bm R_t,\qquad
+ \bm R_t=\mathsf B_t\bm E_t,\\
+ \bm R_t&=(\Id_{NS}-\mathsf B_t\mathsf G)^{-1}\mathsf B_t\bm F_t.
+ \label{eq:lg-leontief}
+\end{align}
+$\mathsf B_t$ 的列和为一，$\mathsf G$ 的第 $(j,q)$ 列和为 $1-\nu_q<1$。因此
+\begin{equation}
+ \spr(\mathsf B_t\mathsf G)\leq\|\mathsf B_t\mathsf G\|_1
+ =\max_q(1-\nu_q)<1,
+ \label{eq:lg-io-inverse}
+\end{equation}
+其中 $\spr$ 表示谱半径，$\|\cdot\|_1$ 为矩阵诱导1范数。从而条件投入产出逆存在。式\eqref{eq:lg-leontief}依赖内生的贸易份额和最终需求，不能单独替代整个动态均衡。
+
+\subsection{多地区贸易平衡的正确推广}
+零利润、要素出清和所有者预算给出
+\begin{align}
+ \mathrm{GDP}_{it}&=\sum_s\nu_sR_{ist}
+ =w_{it}L_{it}+r_{it}K_{it},\label{eq:lg-gdp-income}\\
+ \mathrm{GDP}_{it}&=F^C_{it}+\invp_{it}I_{it}.
+ \label{eq:lg-gdp-expenditure}
+\end{align}
+对部门支出求和，得到 $\sum_sE_{ist}=\sum_sR_{ist}$，进而每个地区满足
+\begin{equation}
+ \sum_{j\neq i}\sum_s\mathcal T_{ij,s,t}
+ =\sum_{j\neq i}\sum_s\mathcal T_{ji,s,t},
+ \qquad i=1,\ldots,N.
+ \label{eq:lg-regional-trade-balance}
+\end{equation}
+即每地对所有其他地区的出口总值等于进口总值。\textbf{当 $N>2$ 时，不要求任意两个地区之间的双边贸易平衡}，也不要求单个部门贸易平衡。各地净出口条件相加为零，仅有 $N-1$ 条独立的地区贸易余额限制；这些条件已由原有预算和市场出清隐含，不应再添加互不相容的贸易逆差路径。
+
+全国支出与收入恒等式为
+\begin{equation}
+ \sum_i\mathrm{GDP}_{it}=\sum_i\left(F^C_{it}+\invp_{it}I_{it}\right).
+ \label{eq:lg-national-resource}
+\end{equation}
+中间投入通过总产出与增加值区别处理，冰山耗用通过出厂实物出清和到岸价格处理，均不在全国最终需求中重复加总。
+
+\section{动态空间竞争均衡的定义与闭合方程组}
+\label{sec:lg-equilibrium}
+
+\subsection{初始条件、外生量和状态维度}
+给定初始继承状态
+\begin{equation}
+ \mathcal Z_0=\{n_{i0}>0,\ H_{i,a,0}\geq0\ (a=1,\ldots,J-1),\ K_{i0}>0\}_{i=1}^N,
+ \label{eq:lg-initial-state}
+\end{equation}
+共同结构参数
+\begin{equation}
+ \{\alpha_s,\gamma_{sq},\nu_s,\sigma_s,\zeta_{is},\omega_s,\eta_s,
+ \beta_w,\beta_k,\rho,\vartheta,\delta,s_A,s^C_a,\chi,\ell,J\},
+\end{equation}
+及外生路径
+\begin{equation}
+ \{f_{it},A_{ist},a^w_{it},\tau_{ij,s,t},\kappa_{ij,t}\}_{t\geq0}.
+ \label{eq:lg-exogenous-path}
+\end{equation}
+$\nu_s=1-\sum_q\gamma_{sq}$ 为派生参数，不应独立任意指定。继承状态由 $NJ$ 个人口分量和 $N$ 个资本分量组成，总计 $N(J+1)$ 维；$H_{i,0,t}$、劳动时间、价格和价值函数均由状态与最优性条件共同决定，不另视为独立继承状态。
+
+\subsection{均衡定义与名义归一化}
+一个完美预见动态空间竞争均衡是满足以下条件的价格、配置、人口和价值路径：
+\begin{enumerate}
+ \item 工人消费满足家庭预算\eqref{eq:lg-worker-budget}，价值和迁移概率满足\eqref{eq:lg-bellman}、\eqref{eq:lg-migration-share}。
+ \item 资本所有者消费、投资和资本路径满足预算\eqref{eq:lg-capital-budget}、资本运动\eqref{eq:lg-capital-law}、影子价值\eqref{eq:lg-q-euler}、互补条件\eqref{eq:lg-investment-complementarity}与横截条件\eqref{eq:lg-tvc}。
+ \item 企业满足生产技术、成本最小化、零利润及要素需求\eqref{eq:lg-production}--\eqref{eq:lg-factor-demand}。
+ \item 消费与投资组合成本最小，部门价格和贸易份额满足\eqref{eq:lg-sector-price}--\eqref{eq:lg-investment-price}。
+ \item 劳动、资本和商品市场逐期出清，即\eqref{eq:lg-factor-clearing}、\eqref{eq:lg-revenue-clearing}和\eqref{eq:lg-physical-clearing}。
+ \item 出生、儿童与成年人口满足\eqref{eq:lg-birth}、\eqref{eq:lg-child-transition}和\eqref{eq:lg-adult-transition}；所有主体预期与实际均衡路径一致。
+\end{enumerate}
+在有限贸易成本和正 CES 权重下，地区商品价格体系相互联系。每期只选择一个名义尺度，例如
+\begin{equation}
+ \pc_{1t}=1,\qquad t=0,1,\ldots.
+ \label{eq:lg-numeraire}
+\end{equation}
+不能对 $N$ 个地区分别施加 $\pc_{it}=1$；其他地区相对消费价格是内生结果。地区 GDP 与贸易余额条件应作为资源一致性核查，避免在求解器中将所有依赖条件重复加入而形成冗余方程组。
+
+\subsection{紧凑的求解系统}
+对每期、每地和每部门，核心系统可以整理为
+\begin{equation}
+ \left\{\begin{aligned}
+ H_{i,0,t}&=f_{it}n_{it},\qquad
+ L_{it}=n_{it}-\ell\sum_aH_{i,a,t},\\
+ c^w_{it}&=\frac{w_{it}L_{it}}{\pc_{it}(n_{it}+\chi D_{it})},\qquad
+ p_{ist}=c^{\mathrm{unit}}_{ist},\\
+ P_{jst}&=\left[\sum_i\zeta_{is}(\tau_{ij,s,t}p_{ist})^{1-\sigma_s}\right]^{1/(1-\sigma_s)},\\
+ R_{ist}&=\sum_j\pi_{ij,s,t}E_{jst},\\
+ E_{jst}&=\omega_sF^C_{jt}+\eta_s\invp_{jt}I_{jt}+\sum_q\gamma_{qs}R_{jqt},\\
+ w_{it}L_{it}&=\sum_sb_sR_{ist},\qquad
+ r_{it}K_{it}=\sum_sa_sR_{ist},\\
+ \pc_{it}C^k_{it}+\invp_{it}I_{it}&=r_{it}K_{it},\\
+ K_{i,t+1}&=(1-\delta)K_{it}+I_{it}.
+ \end{aligned}\right.
+ \label{eq:lg-compact-static-capital}
+\end{equation}
+再联立人口运动、工人 Bellman 方程、迁移份额、资本影子价值与投资互补条件，以及每期一个名义归一化，即可定义完整过渡路径。该整理只是减少重复书写，不额外固定工资、贸易份额或储蓄率。
+
+\section{生育率影响劳动力空间分布的动态传导推导}
+\label{sec:lg-transmission}
+
+前文已完成家庭、企业、市场出清与动态均衡的定义。以下在这些条件之上推导人口与迁移的局部传导；固定部分价格或迁移路径的偏导均会注明条件，正式的两条情景比较留到后文反事实章节。
+
+
+\subsection{当期分布效应：人数份额与效率劳动份额分开}
+在期初成年工人和年龄 $a\geq1$ 的儿童队列给定时，
+\begin{equation}
+ D_{it}=f_{it}n_{it}+\sum_{a=1}^{J-1}H_{i,a,t}.
+\end{equation}
+因此，只改变本期 $f_{it}$ 而暂时固定价格和其他状态，得到
+\begin{equation}
+ \frac{\partial d_{it}}{\partial f_{it}}=1,\qquad
+ \frac{\partial h_{it}}{\partial f_{it}}=-\ell,\qquad
+ \frac{\partial L_{it}}{\partial f_{it}}=-\ell n_{it}.
+ \label{eq:lg-contemporaneous-labor}
+\end{equation}
+这不是就业人数下降，而是给定就业人数下的照料时间效应。若 $\ell=0$，该当期直接劳动时间效应为零；仍存在儿童消费负担和后续价格、迁移反馈。
+
+在共同的期初成年人口给定时，出生不直接改变当期工人所在地，故
+\begin{equation}
+ \left.\frac{\partial\lambda^n_{jt}}{\partial f_{it}}\right|_{\bm n_t}=0,
+ \qquad i,j=1,\ldots,N.
+ \label{eq:lg-instant-headcount-share}
+\end{equation}
+而照料工时可使效率劳动份额立即变化。对式\eqref{eq:lg-effective-spatial-share}求导，得到
+\begin{equation}
+ \left.\frac{\partial\lambda^L_{jt}}{\partial f_{it}}\right|_{\bm n_t,H_{a\geq1}}
+ =-\frac{\ell n_{it}}{L_t^{\mathrm{tot}}}
+ \left(\mathbf1\{j=i\}-\lambda^L_{jt}\right).
+ \label{eq:lg-instant-effective-share}
+\end{equation}
+在 $\ell>0$ 时，本地生育率上升的直接照料效应降低本地效率劳动份额，并通过全国劳动总量这个分母提高其他地区的份额；该直接变化不意味着工人已经迁移。两种份额的导数对所有 $j$ 加总都为零。上述偏导固定期初状态；若未来生育变化事先已知，期初成年人口可能已经因之前的迁移而发生情景差异。
+
+由家庭消费预算和当期效用得
+\begin{equation}
+ \left.\frac{\partial\log c^w_{it}}{\partial f_{it}}\right|_{w,\pc,n,H_{a\geq1}}
+ =\left.\frac{\partial u^w_{it}}{\partial f_{it}}\right|_{w,\pc,n,H_{a\geq1}}
+ =-\frac{\ell}{1-\ell d_{it}}-\frac{\chi}{1+\chi d_{it}}.
+ \label{eq:lg-contemporaneous-utility}
+\end{equation}
+这是固定价格和状态的直接偏导，不是完整的一般均衡政策效应。其分母为正，若 $\ell$ 或 $\chi$ 为正，直接消费效应为负。
+
+\subsection{成年进入的固定滞后与跨地区分布}
+定义从出生到年龄 $a$ 的累计存活率
+\begin{equation}
+ S_0=1,\qquad S_a=\prod_{q=0}^{a-1}s^C_q,\quad a=1,\ldots,J,
+\end{equation}
+以及连续 $h$ 期的迁移传递矩阵
+\begin{equation}
+ \mathcal U_{t,h}=\begin{cases}
+ \Id_N,&h=0,\\
+ \mathsf U_{t+h-1}\mathsf U_{t+h-2}\cdots\mathsf U_t,&h\geq1.
+ \end{cases}
+ \label{eq:lg-migration-product}
+\end{equation}
+矩阵乘法的时间顺序不能交换。对 $t$ 期出生的队列，反复使用人口推进式可得
+\begin{equation}
+ \bm H_{a,t+a}^{[t]}=S_a\mathcal U_{t,a}\mathsf F_t\bm n_t,
+ \qquad a=0,\ldots,J-1.
+ \label{eq:lg-born-cohort}
+\end{equation}
+上标 $[t]$ 标识出生期。该队列在 $t+J$ 期成为新成年工人，地区分布为
+\begin{equation}
+ \bm a_{t+J}^{[t]}=S_J\mathcal U_{t,J}\mathsf F_t\bm n_t.
+ \label{eq:lg-maturing-cohort}
+\end{equation}
+由此可见，在地区 $i$ 出生，不意味着 $J$ 年后一定在地区 $i$ 供给劳动；监护家庭的多次迁移共同决定其成年地区。
+
+若只对出生期生育率作微小扰动，并暂时固定该期成年人口和整条迁移路径，则
+\begin{equation}
+ \dd\bm a_{t+J}^{[t]}
+ =S_J\mathcal U_{t,J}\diag(\bm n_t)\dd\bm f_t.
+ \label{eq:lg-birth-labor-direct}
+\end{equation}
+定义人口传递权重
+\begin{equation}
+ \Omega_{ji,t}^{(J)}=[\mathcal U_{t,J}]_{ji},\qquad
+ \Omega_{ji,t}^{(J)}\geq0,\qquad\sum_j\Omega_{ji,t}^{(J)}=1.
+\end{equation}
+地区 $i$ 生育率对地区 $j$ 该批新成年工人的直接贡献为
+\begin{equation}
+ \left.\frac{\partial a_{j,t+J}^{[t]}}{\partial f_{it}}\right|_{\bm n_t,\{\mathsf M\}}
+ =S_J\Omega_{ji,t}^{(J)}n_{it}.
+ \label{eq:lg-spatial-birth-multiplier}
+\end{equation}
+对所有地区求和，得到全国直接新增成年工人 $S_Jn_{it}\dd f_{it}$；空间分配由 $\Omega$ 决定。
+
+为了转为主要结果变量，还须扣除全国成年人口增长带来的份额稀释。固定迁移路径和冲击期继承状态，只取该出生队列的直接成年进入贡献，有
+\begin{equation}
+ \left.\frac{\partial\lambda^n_{j,t+J}}{\partial f_{it}}\right|_{\text{该队列直接进入}}
+ =\frac{S_Jn_{it}}{n_{t+J}^{\mathrm{tot}}}
+ \left(\Omega_{ji,t}^{(J)}-\lambda^n_{j,t+J}\right).
+ \label{eq:lg-cohort-spatial-share-effect}
+\end{equation}
+因此新增队列流向 $j$ 的权重高于该地原有成年劳动份额时，该项提高其份额；权重较低时，该项降低其份额。若新增队列在各地的分布恰好与现有成年人相同，该直接进入项只扩大人数，不改变空间份额。上式不是包含内生迁移和价格反馈的完整响应。
+
+在同样的固定迁移路径比较下，该批新增儿童在成年前对当期劳动的直接占用为
+\begin{equation}
+ \left.\dd\bm L_{t+h}\right|_{\text{该出生队列的直接照料}}
+ =-\ell S_h\mathcal U_{t,h}\diag(\bm n_t)\dd\bm f_t,
+ \qquad 0\leq h<J.
+ \label{eq:lg-child-labor-displacement}
+\end{equation}
+这些式子刻画固定人口流动规则下的直接效应。实际均衡中，父母可能在儿童成年之前迁移，从而使地区成年劳动力提前发生重配；这不表示新生儿提前参加劳动。
+
+\subsection{迁移价值与人口变化的一阶分解}
+以下 $\dd$ 表示固定结构参数时对一般均衡路径作局部微分。家庭效用变化满足
+\begin{equation}
+ \dd u^w_{it}=\dd\log a^w_{it}+\dd\log w_{it}-\dd\log\pc_{it}
+ -\left(\frac{\ell}{1-\ell d_{it}}+\frac{\chi}{1+\chi d_{it}}\right)\dd d_{it}.
+ \label{eq:lg-flow-differential}
+\end{equation}
+对包含值使用包络关系，可得
+\begin{equation}
+ \dd V_{it}=\dd u^w_{it}+\beta_ws_A\sum_jm_{ij,t}
+ \left(\dd V_{j,t+1}-\dd\kappa_{ij,t}\right).
+ \label{eq:lg-value-differential}
+\end{equation}
+迁移概率变化为
+\begin{align}
+ \dd m_{ij,t}&=\frac{m_{ij,t}}{\vartheta}\Bigg[
+ \dd V_{j,t+1}-\dd\kappa_{ij,t}\\
+ &\qquad-\sum_km_{ik,t}\left(\dd V_{k,t+1}-\dd\kappa_{ik,t}\right)\Bigg].
+ \label{eq:lg-migration-differential}
+\end{align}
+每个起点的概率变化加总为零。考察生育率的局部变化并保持迁移成本路径不变时，令 $\dd\kappa=0$，迁移仍通过价值差内生响应。
+
+出生和人口的全微分为
+\begin{align}
+ \dd\bm H_{0,t}&=\mathsf F_t\dd\bm n_t
+ +\diag(\bm n_t)\dd\bm f_t,\label{eq:lg-birth-differential}\\
+ \dd\bm H_{a+1,t+1}&=s^C_a\left(
+ \mathsf U_t\dd\bm H_{a,t}+\dd\mathsf U_t\bm H_{a,t}\right),\\
+ \dd\bm n_{t+1}&=\mathsf U_t\left(s_A\dd\bm n_t
+ +s^C_{J-1}\dd\bm H_{J-1,t}\right)
+ +\dd\mathsf U_t\left(s_A\bm n_t+s^C_{J-1}\bm H_{J-1,t}\right).
+ \label{eq:lg-adult-differential}
+\end{align}
+成人方程第一项为给定迁移规则下的人口继承与队列变化，第二项为迁移规则变化引起的空间重配。左乘 $\ones^{\mathsf T}$ 后，第二项为零，反映国内迁移本身不创造全国成年工人。
+
+劳动供给的最终核算为
+\begin{equation}
+ \dd\bm L_t=\dd\bm n_t-\ell\sum_{a=0}^{J-1}\dd\bm H_{a,t},\qquad
+ \dd\log L_{it}=\dd\log n_{it}-\frac{\ell}{h_{it}}\dd d_{it}.
+ \label{eq:lg-total-labor-differential}
+\end{equation}
+其中 $\dd\bm H_{0,t}$ 已包含 $\mathsf F_t\dd\bm n_t$，因此不能把人口迁移与出生变化简单视为两项互不影响的外生冲击。
+
+\subsection{从人数和工时变化转为纯分布响应}
+对两个地区份额向量分别求微分，得到
+\begin{align}
+ \dd\bm\lambda^n_t&=\frac{1}{n_t^{\mathrm{tot}}}
+ \left(\Id_N-\bm\lambda^n_t\ones^{\mathsf T}\right)\dd\bm n_t,
+ \label{eq:lg-headcount-share-differential}\\
+ \dd\bm\lambda^L_t&=\frac{1}{L_t^{\mathrm{tot}}}
+ \left(\Id_N-\bm\lambda^L_t\ones^{\mathsf T}\right)\dd\bm L_t,
+ \label{eq:lg-effective-share-differential}
+\end{align}
+其中 $\bm\lambda^L_t=(\lambda^L_{1t},\ldots,\lambda^L_{Nt})^{\mathsf T}$。两个括号内的算子去除按现有地区份额同比例扩张的全国规模分量，保证
+\begin{equation}
+ \ones^{\mathsf T}\dd\bm\lambda^n_t=0,\qquad
+ \ones^{\mathsf T}\dd\bm\lambda^L_t=0.
+ \label{eq:lg-share-zero-sum}
+\end{equation}
+结合人口、迁移和资本路径的微分，就可以计算生育率对空间分布的总均衡响应，而不是仅比较某地人数或劳动时间的绝对增减。
+
+对式\eqref{eq:lg-adult-differential}中仅由本期迁移矩阵变化引起的分量，全国总量不变，故其份额贡献简化为
+\begin{equation}
+ \left.\dd\bm\lambda^n_{t+1}\right|_{\text{本期迁移规则变化}}
+ =\frac{\dd\mathsf U_t
+ \left(s_A\bm n_t+s^C_{J-1}\bm H_{J-1,t}\right)}{n_{t+1}^{\mathrm{tot}}}.
+ \label{eq:lg-migration-share-contribution}
+\end{equation}
+该项按地区加总为零；相对成年进入与工时差异所引起的份额变化应分别记录，不能全都解释为迁移渠道。
+
+\subsection{贸易、部门重配与资本反馈}
+给定不变的 CES 弹性和来源地权重，价格与贸易份额的一阶变化为
+\begin{align}
+ \dd\log P_{jst}&=\sum_i\pi_{ij,s,t}
+ \left(\dd\log\tau_{ij,s,t}+\dd\log p_{ist}\right),
+ \label{eq:lg-price-differential}\\
+ \dd\log\pi_{ij,s,t}&=(1-\sigma_s)\left[
+ \dd\log\tau_{ij,s,t}+\dd\log p_{ist}-\dd\log P_{jst}\right],\\
+ \dd\log p_{ist}&=-\dd\log A_{ist}+a_s\dd\log r_{it}
+ +b_s\dd\log w_{it}+\sum_q\gamma_{sq}\dd\log P_{iqt}.
+ \label{eq:lg-cost-differential}
+\end{align}
+即使外生贸易成本保持不变，生育引发的工资、资本租金和需求变化仍会改变贸易份额。消费与投资价格分别为
+\begin{equation}
+ \dd\log\pc_{it}=\sum_s\omega_s\dd\log P_{ist},\qquad
+ \dd\log\invp_{it}=\sum_s\eta_s\dd\log P_{ist}.
+\end{equation}
+由要素需求可得部门劳动变化
+\begin{equation}
+ \dd\log L_{ist}=\dd\log R_{ist}-\dd\log w_{it},
+ \label{eq:lg-sector-labor-response}
+\end{equation}
+其加总必须与式\eqref{eq:lg-total-labor-differential}一致，不能在给定总供给之外再任意指定部门就业。
+
+地区部门联合份额的变化还满足
+\begin{equation}
+ \dd\log\Lambda^L_{ist}=\dd\log R_{ist}-\dd\log w_{it}
+ -\dd\log L_t^{\mathrm{tot}}.
+ \label{eq:lg-joint-share-differential}
+\end{equation}
+所以商品需求、贸易成本和投入产出联系通过部门产值与工资影响全国劳动在地区部门之间的联合分布，资本反馈则进一步影响未来地区吸引力。
+
+资本存量和边际效用的变化满足
+\begin{equation}
+ \dd K_{i,t+1}=(1-\delta)\dd K_{it}+\dd I_{it},\qquad
+ \dd\log\lambda_{it}=-\rho\dd\log C^k_{it}-\dd\log\pc_{it}.
+\end{equation}
+本期和下一期均为内点时，令 $\mathcal R^K_{i,t+1}=r_{i,t+1}+(1-\delta)\invp_{i,t+1}$，欧拉方程的一阶变化为
+\begin{align}
+ \dd\log\invp_{it}+\dd\log\lambda_{it}
+ &=\dd\log\lambda_{i,t+1}
+ +\frac{r_{i,t+1}}{\mathcal R^K_{i,t+1}}\dd\log r_{i,t+1}\\
+ &\qquad+\frac{(1-\delta)\invp_{i,t+1}}{\mathcal R^K_{i,t+1}}
+ \dd\log\invp_{i,t+1}.
+\end{align}
+若投资约束绑定，则应使用影子价值和互补条件求解，不能继续套用内点导数。由此形成完整反馈：生育改变抚养负担与未来人口，进而影响迁移、劳动和需求；要素价格与贸易网络随之调整，资本积累又改变未来劳动需求与迁移价值。除上述固定价格或固定流动规则的直接效应外，地区工资、长期人均消费及净迁移的总效应符号需要联立求解。
+
+\section{劳动力空间分布的长期条件与对称核算特例}
+\label{sec:lg-steady-state}
+
+\subsection{稳定空间份额与人口水平稳态的区别}
+长期空间分布的主要对象是 $\bm\lambda^n$ 和 $\bm\lambda^L$ 是否稳定，而不是先要求全国人口不再变化。给定最终不变的迁移矩阵 $\mathsf U$ 和生育率矩阵 $\mathsf F$，若成年及儿童队列按共同倍数 $g>0$ 增长、年龄结构与地区份额稳定，则人数份额满足
+\begin{equation}
+ g\bm\lambda^n=\left(s_A\mathsf U
+ +S_Jg^{-(J-1)}\mathsf U^J\mathsf F\right)\bm\lambda^n,\qquad
+ \ones^{\mathsf T}\bm\lambda^n=1.
+ \label{eq:lg-stationary-spatial-share}
+\end{equation}
+人口增长倍数 $g$ 和空间份额须共同确定。$g=1$ 对应人口水平稳态；$g\neq1$ 时，地区份额仍可能保持稳定。相应稳定的抚养比和效率劳动份额为
+\begin{align}
+ d_i&=\frac{\displaystyle\sum_{a=0}^{J-1}S_ag^{-a}
+ [\mathsf U^a\mathsf F\bm\lambda^n]_i}{\lambda^n_i},\\
+ \lambda^L_i&=\frac{\lambda^n_i(1-\ell d_i)}
+ {\sum_k\lambda^n_k(1-\ell d_k)},\qquad 1-\ell d_i>0.
+ \label{eq:lg-stationary-effective-share}
+\end{align}
+这些是给定长期迁移规则后的人口与工时结构条件。实际长期 $\mathsf U$ 仍由价值、价格和资本路径内生决定，完整经济增长路径还需满足所有者跨期条件，不能仅凭人口份额方程宣布已解出整体均衡。
+
+\subsection{异质地区的人口水平稳态}
+设所有外生量和内生迁移矩阵最终不变，省略时间下标，令 $\mathsf U=\mathsf M^{\mathsf T}$、$\mathsf F=\diag(f_1,\ldots,f_N)$。由人口推进有
+\begin{equation}
+ \bm H_a=S_a\mathsf U^a\mathsf F\bm n,\qquad a=0,\ldots,J-1.
+\end{equation}
+代入成年人口方程，得
+\begin{equation}
+ \bm n=\left(s_A\mathsf U+S_J\mathsf U^J\mathsf F\right)\bm n.
+ \label{eq:lg-steady-demographic-eigen}
+\end{equation}
+因而正人口水平稳态要求人口转移算子具有对应正向量的特征值 $1$；当该非负算子不可约且存在正稳态人口时，其谱半径为 $1$。这是给定稳态迁移矩阵后的\textbf{人口一致性条件}，不证明内生迁移、生产和资本积累的整体均衡必然存在或唯一。
+
+对式\eqref{eq:lg-steady-demographic-eigen}按地区求和，得到全国替代条件
+\begin{equation}
+ 1=s_A+S_J\frac{\sum_i f_in_i}{\sum_i n_i}
+ =s_A+S_J\bar f.
+ \label{eq:lg-heterogeneous-replacement}
+\end{equation}
+所以地区生育率不必各自都满足同一替代水平，但其按稳态人口加权的平均值须与存活率相容。人口特征向量主要限制空间比例，人口规模还须与初始条件及完整均衡路径相容，不能逐期重新归一化人口而丢失生育的总量效应。
+
+\subsection{资本稳态与人口增长情形}
+资本水平稳态要求 $I_i=\delta K_i$。若 $K_i>0$，则投资为正、$q^K_i=\invp_i$，欧拉条件化为
+\begin{equation}
+ \frac{r_i}{\invp_i}=\beta_k^{-1}-1+\delta,\qquad i=1,\ldots,N.
+ \label{eq:lg-steady-capital-return}
+\end{equation}
+这不要求不同地区的名义资本租金相等，因为 $\invp_i$ 可以不同。
+
+若给定不变的 $\mathsf U$ 和 $\mathsf F$ 时，人口按 $g=1+g_n>0$ 的共同倍数增长，写 $\bm n_t=g^t\bar{\bm n}$。对应的年龄队列比例满足
+\begin{equation}
+ \bm H_{a,t}=S_ag^{-a}\mathsf U^a\mathsf F\bm n_t,
+\end{equation}
+故人口增长与地区比例须共同满足
+\begin{equation}
+ g\bar{\bm n}=\left(s_A\mathsf U+S_Jg^{-(J-1)}\mathsf U^J\mathsf F\right)\bar{\bm n}.
+ \label{eq:lg-growing-demography}
+\end{equation}
+同质生育率 $f_i=f$、$s^C_a=s_C$ 且地区人口比例为迁移矩阵的稳定分布时，简化为
+\begin{equation}
+ 1+g_n=s_A+\frac{fs_C^J}{(1+g_n)^{J-1}}.
+ \label{eq:lg-homogeneous-growth}
+\end{equation}
+人口水平稳态是 $g_n=0$ 的特例。若外生生育路径不支持水平稳态，应使用合适的长期人口与经济延伸；本节的人口增长式本身并未推导带固定所有者账户的完整经济平衡增长路径。
+
+\subsection{任意地区数下的对称迁移与贸易}
+以下仅为与两地区解析示例对应的核算特例，不改变一般模型的异质性假设。设地区对称、舒适度相同，双边迁移成本为共同符号 $\kappa$、原地成本为零，则 $V_i=V_j$，
+\begin{equation}
+ m_{ii}=\frac{1}{1+(N-1)e^{-\kappa/\vartheta}},\qquad
+ m_{ij}=\frac{e^{-\kappa/\vartheta}}{1+(N-1)e^{-\kappa/\vartheta}},\quad i\neq j.
+ \label{eq:lg-symmetric-migration}
+\end{equation}
+总迁出概率为 $1-m_{ii}$，不能将两地区中的一条外迁概率直接用于每个目的地而使行和超过一。对称地区人口相等时，每地总迁入与总迁出相等，但双向迁移仍为正。
+
+再设 $\zeta_{is}=1/N$，部门间弹性相同为 $\sigma$，所有跨地区贸易成本为共同符号 $\tau\geq1$。若各地同部门出厂价格相同，则
+\begin{equation}
+ \mathcal D_N(\tau)=\left[\frac{1+(N-1)\tau^{1-\sigma}}{N}\right]^{1/(1-\sigma)},
+ \qquad P_{is}=p_s\mathcal D_N(\tau).
+ \label{eq:lg-symmetric-trade-wedge}
+\end{equation}
+贸易份额为
+\begin{equation}
+ \pi_{ii,s}=\frac{1}{1+(N-1)\tau^{1-\sigma}},\qquad
+ \pi_{ij,s}=\frac{\tau^{1-\sigma}}{1+(N-1)\tau^{1-\sigma}},\quad i\neq j.
+\end{equation}
+每地采购份额在 $N$ 个来源间加总为一，迁移成本和贸易成本仍然是两个不同单位的符号变量。
+
+\subsection{带资本积累的对称解析特例}
+进一步仅在本核算特例中取 $\gamma_{sq}=0$、$A_s=1$、$\alpha_s=\alpha$、$\omega_s=\eta_s$，每地 $n_i=1$、$\ell=0$。令 $s^C_a=s_C$，并取
+\begin{equation}
+ f=\frac{1-s_A}{s_C^J},\qquad
+ d=f\sum_{a=0}^{J-1}s_C^a,\qquad
+ \bar r=\beta_k^{-1}-1+\delta.
+\end{equation}
+以对称消费价格 $\pc_i=\invp_i=1$ 计价，各部门出厂价为 $p=1/\mathcal D_N(\tau)$，每地均衡满足
+\begin{align}
+ K_N(\tau)&=\left[\frac{\alpha}{\bar r\mathcal D_N(\tau)}\right]^{1/(1-\alpha)},&
+ Y_N(\tau)&=K_N(\tau)^\alpha,\\
+ w_N(\tau)&=\frac{(1-\alpha)Y_N(\tau)}{\mathcal D_N(\tau)},&
+ I_N(\tau)&=\delta K_N(\tau),\\
+ C^k_N(\tau)&=(\bar r-\delta)K_N(\tau),&
+ c^w_N(\tau)&=\frac{w_N(\tau)}{1+\chi d}.
+ \label{eq:lg-symmetric-capital}
+\end{align}
+资本和劳动按 $\omega_s$ 在部门间分配。实物总产出为 $Y_N$，名义 GDP 为 $Y_N/\mathcal D_N$，并满足
+\begin{equation}
+ \frac{Y_N(\tau)}{\mathcal D_N(\tau)}
+ =w_N(\tau)+C^k_N(\tau)+I_N(\tau).
+\end{equation}
+全国总量为对应每地总量的 $N$ 倍。该特例既保留 $N$、$\tau$ 和 $\kappa$ 的符号形式，也可用于核查一般模型在 $N=2$ 时是否退回原稿。此处没有生成实际地区的数值校准或模拟结果。
+
+\subsection{空间分布的对称基准检验}
+若初始成年人口、各年龄儿童、资本、技术、舒适度和双边成本在地区间对称，生育率在各地相同且此后共同变化，则沿对称均衡路径有
+\begin{equation}
+ \lambda^n_{it}=\lambda^L_{it}=\frac1N,\qquad
+ \mathrm{HHI}^n_t=\mathrm{HHI}^L_t=\frac1N.
+ \label{eq:lg-symmetric-distribution}
+\end{equation}
+全国出生、成年工人和劳动总量仍可能变化。这个特例说明全国生育水平变化不必自动导致空间集中或分散；要得到地区份额响应，需要地区生育、年龄结构、生产条件、成本或其均衡调整产生空间差异。全国共同生育变化在异质地区模型中仍可能改变空间分布，不能将上述对称结论直接外推。
+
+\section{空间分布反事实、主要结果与数据组织}
+\label{sec:lg-counterfactual}
+
+\subsection{反事实路径与初始条件}
+在完整均衡已经定义后，从本节起正式比较两条路径。上标 $\mathrm B$ 表示给定原生育率路径时的基准均衡，上标 $\mathrm{CF}$ 表示替换生育率路径并重新求解的反事实均衡；基准可以增长或收缩，不要求处于稳态。对任意数量 $X$，统一记 $\Delta X=X^{\mathrm{CF}}-X^{\mathrm B}$。生育率路径满足
+\begin{equation}
+ f^{\mathrm{CF}}_{it}=f^{\mathrm B}_{it}+\Delta f_{it}\geq0.
+ \label{eq:lg-counterfactual-fertility}
+\end{equation}
+例如，一次性地区冲击、从 $t_0$ 起的持续地区冲击以及全国共同变化分别可写为
+\begin{align}
+ \Delta f_{it}&=\varepsilon\mathbf1\{i=i_0\}\mathbf1\{t=t_0\},\\
+ \Delta f_{it}&=\varepsilon\mathbf1\{i=i_0\}\mathbf1\{t\geq t_0\},\\
+ \Delta f_{it}&=\varepsilon_t,\qquad i=1,\ldots,N.
+\end{align}
+两条路径使用相同的继承初始状态 $n_{i0},H_{i,a,0}$（$a\geq1$）、$K_{i0}$，并固定生产率、舒适度、贸易成本、迁移成本和结构参数，重新求解全部内生路径。若冲击从 $t=0$ 开始，则 $H_{i,0,0}=f_{i0}n_{i0}$ 会随情景改变；不能在改变当期生育率的同时又强制两种情景具有相同的新生儿数。
+
+沿用完美预见假设，每条情景路径从初始求解期起已知。因此，若 $t_0>0$，未来生育变化可能在 $t_0$ 之前引起迁移和投资的预期调整。定义反事实时应明确路径何时被知晓；不能一方面令所有主体提前知道未来变化，另一方面又额外强制变化实施前的内生路径完全相同。
+
+暂时固定迁移路径或资本路径，可另作机制分解；这类受约束实验应单独标注，其结果不等于重新出清所有市场的主反事实。不同机制在一般均衡中存在交互，分解差额也不自动具有唯一的因果归属。
+
+\subsection{全国规模与空间重配的有限变化分解}
+对上述已经定义的两条路径，同期数量变化可以精确写为
+\begin{align}
+ \Delta n_{it}&=\lambda^{n,\mathrm B}_{it}\Delta n_t^{\mathrm{tot}}
+ +n_t^{\mathrm{tot,CF}}\Delta\lambda^n_{it},\\
+ \Delta L_{it}&=\lambda^{L,\mathrm B}_{it}\Delta L_t^{\mathrm{tot}}
+ +L_t^{\mathrm{tot,CF}}\Delta\lambda^L_{it}.
+ \label{eq:lg-scale-distribution-decomposition}
+\end{align}
+第一项为按基准比例分摊的全国规模变化，第二项为地区份额变化。第一式由 $n^{\mathrm{CF}}_{it}-n^{\mathrm B}_{it}=\lambda^{n,\mathrm{CF}}_{it}n_t^{\mathrm{tot,CF}}-\lambda^{n,\mathrm B}_{it}n_t^{\mathrm{tot,B}}$，再加减 $\lambda^{n,\mathrm B}_{it}n_t^{\mathrm{tot,CF}}$ 得到。等价地，
+\begin{align}
+ \Delta\lambda^n_{it}&=\frac{\Delta n_{it}-\lambda^{n,\mathrm B}_{it}\Delta n_t^{\mathrm{tot}}}{n_t^{\mathrm{tot,CF}}},\\
+ \Delta\lambda^L_{it}&=\frac{\Delta L_{it}-\lambda^{L,\mathrm B}_{it}\Delta L_t^{\mathrm{tot}}}{L_t^{\mathrm{tot,CF}}}.
+ \label{eq:lg-finite-share-change}
+\end{align}
+反事实总量作为第二项的乘数，使有限变化比较也精确成立；直接改用基准总量而忽略交叉项，只得到局部近似。前文全微分用于一般局部数量关系，本节用 $\Delta$ 比较已经求出的两条路径。两项是记账分解，不能分别当作互不作用、已单独识别的因果渠道。
+
+\subsection{两条均衡分布之间的差异}
+在两条情景均已定义后，补充分布差异指标
+\begin{equation}
+ \mathcal D^n_t=\frac12\sum_i|\lambda^{n,\mathrm{CF}}_{it}-\lambda^{n,\mathrm B}_{it}|,\qquad
+ \mathcal D^L_t=\frac12\sum_i|\lambda^{L,\mathrm{CF}}_{it}-\lambda^{L,\mathrm B}_{it}|.
+ \label{eq:lg-distribution-distance}
+\end{equation}
+它们度量两条地区份额分布相差多少，与描述单条分布的集中度不同。两种不同空间配置可以有相同集中度；分布差异也不直接等于实际迁移流量，因为相对成年进入和工时变化同样可以改变份额。
+
+\subsection{初期总出生不变的地区差异化生育情景}
+为突出出生的地区构成，可在共同继承状态的起期 $t=0$，选择两个不同地区 $i_0,k_0$，设置一次性变化
+\begin{equation}
+ \Delta f_{i_0,0}=\varepsilon,\qquad
+ \Delta f_{k_0,0}=-\frac{n_{i_0,0}}{n_{k_0,0}}\varepsilon,\qquad
+ \Delta f_{j,0}=0\quad(j\notin\{i_0,k_0\}).
+ \label{eq:lg-birth-neutral-spatial-scenario}
+\end{equation}
+选择 $\varepsilon$ 使全部生育率非负，并在 $t>0$ 恢复各地基准生育率路径。因起期 $\bm n_0$ 相同，恰有 $\sum_i n_{i0}\Delta f_{i0}=0$，故该情景的\textbf{起期全国出生数不变、出生地区构成改变}。未来地区人口和全国出生仍可能因迁移及人口构成内生变化，不能把起期限制误解为整条未来人口路径都被固定。
+
+该情景可与单地生育变化、全国共同变化对比，分别展示生育地区差异与总体生育水平的作用；主比较均重新求解工资、迁移、贸易和投资。
+
+\subsection{主要响应：地区劳动力份额的动态变化}
+完整均衡求解后，定义对地区 $i$ 在 $t_0$ 的生育率扰动的空间份额响应
+\begin{align}
+ \mathcal R^n_{ji}(h;t_0)&=\left.
+ \frac{\partial\lambda^n_{j,t_0+h}}{\partial f_{i,t_0}}
+ \right|_{\text{其他外生路径不变、市场重新出清}},\\
+ \mathcal R^L_{ji}(h;t_0)&=\left.
+ \frac{\partial\lambda^L_{j,t_0+h}}{\partial f_{i,t_0}}
+ \right|_{\text{其他外生路径不变、市场重新出清}},\qquad h\geq0.
+ \label{eq:lg-ge-spatial-response}
+\end{align}
+$\mathcal R^n$ 为主要人数分布响应，$\mathcal R^L$ 为补充的效率劳动分布响应。二者同时包含迁移、成年进入、照料、工资价格、贸易和资本调整，不能用固定迁移规则下的式\eqref{eq:lg-cohort-spatial-share-effect}替代。
+
+保留人数与工时水平响应作为核算量
+\begin{equation}
+ \mathcal M^n_{ji}(h;t_0)=\frac{\partial n_{j,t_0+h}}{\partial f_{i,t_0}},\qquad
+ \mathcal M^L_{ji}(h;t_0)=\frac{\partial L_{j,t_0+h}}{\partial f_{i,t_0}},
+ \label{eq:lg-ge-labor-multiplier}
+\end{equation}
+同样要求其他外生路径不变且市场重新出清。份额响应与水平响应的关系为
+\begin{align}
+ \mathcal R^n_{ji}(h;t_0)&=
+ \frac{\mathcal M^n_{ji}(h;t_0)-\lambda^n_{j,t_0+h}\sum_k\mathcal M^n_{ki}(h;t_0)}
+ {n_{t_0+h}^{\mathrm{tot}}},\\
+ \mathcal R^L_{ji}(h;t_0)&=
+ \frac{\mathcal M^L_{ji}(h;t_0)-\lambda^L_{j,t_0+h}\sum_k\mathcal M^L_{ki}(h;t_0)}
+ {L_{t_0+h}^{\mathrm{tot}}}.
+ \label{eq:lg-response-normalization}
+\end{align}
+因此每个起点冲击和每一期限都满足
+\begin{equation}
+ \sum_j\mathcal R^n_{ji}(h;t_0)=0,\qquad
+ \sum_j\mathcal R^L_{ji}(h;t_0)=0.
+ \label{eq:lg-spatial-response-zero-sum}
+\end{equation}
+地区份额的提高必对应其他地区份额的下降，而全国劳动总量响应可以不为零。
+
+结果首先报告：
+\begin{enumerate}
+ \item 各地 $\lambda^n_{it}$、$\lambda^L_{it}$ 及其反事实变化，使用 $100\Delta\lambda$ 表示百分点变化；
+ \item 份额变化中相对成年进入与净迁移的逐期记账贡献，区分出生地、成长期间所在地与成年劳动地；
+ \item 地区部门联合份额 $\Lambda^L_{ist}$、集中度变化和分布差异 $\mathcal D^n_t,\mathcal D^L_t$；
+ \item $h<J$ 时的父母迁移和照料渠道，以及 $h\geq J$ 时新增成年队列的空间配置；
+ \item 作为机制解释和一致性核查的工资、成人等价消费、资本、投资、贸易、全国人口与劳动总量。
+\end{enumerate}
+有限幅度反事实使用式\eqref{eq:lg-finite-share-change}，同时展示全国规模变化与份额变化，避免仅凭地区人数增加就认定该地获得了更多空间份额。
+若报告福利，先分别展示初始工人的 $\Delta V_{i0}$ 与资本所有者效用变化；外生生育路径改变未来人口数时，需要额外人口福利权重才能作跨世代总福利排序。
+
+\subsection{面板与双边矩阵的最低结构}
+设有 $T+1$ 个时期，下表给出主要数组及其维度。地区、部门和价格基期必须一致。
+{\small
+\begin{longtable}{p{0.22\textwidth}p{0.21\textwidth}p{0.46\textwidth}}
+\caption{$N$地区模型所需数据与维度}\label{tab:lg-data}\\
+\toprule 对象 & 维度／索引 & 内容与用途\\\midrule\endfirsthead
+\toprule 对象 & 维度／索引 & 内容与用途\\\midrule\endhead
+\bottomrule\endfoot
+出生与生育率 & $N\times(T+1)$ & $B_{it},f_{it}$；核对生育分母、出生时点及年单位。\\
+儿童队列 & 地区$\times$年龄$\times$时期 & 年龄 $0,\ldots,J-1$；初始化已有儿童，检验成年进入和抚养比。\\
+成年人口与劳动 & $N\times(T+1)$ & $n_{it},L_{it},h_{it}$；人数、工时和效率劳动分开记录。\\
+地区空间份额 & $N\times(T+1)$ & 由同一研究范围内的成年工人和效率劳动加总构造 $\lambda^n_{it},\lambda^L_{it}$；地区分母和边界保持一致。\\
+成年进入与净迁移 & $N\times(T+1)$ & 构造 $e_{it}$、$\mathrm{NM}_{it}$，区分新成年者与迁入的既有成年人，检验空间份额运动式。\\
+迁移与留存 & $N\times N\times(T+1)$ & 起点、终点、观察窗口和风险人数；必须含原地留存。\\
+贸易与自地采购 & $N\times N\times S\times(T+1)$ & 销售额 $\mathcal T_{ij,s,t}$、采购额 $E_{jst}$ 和份额 $\pi_{ij,s,t}$。\\
+地区部门生产 & $N\times S\times(T+1)$ & 总产值、增加值、劳动报酬、就业与工时，匹配共同部门分类。\\
+投入产出 & 地区$\times$使用部门$\times$投入部门 & $Z_{i,sq,t}$，明确 $s$ 为使用部门、$q$ 为投入品部门。\\
+消费与投资构成 & 部门$\times$地区$\times$时期 & 校准 $\omega,\eta$，区分消费平减指数与投资品平减指数。\\
+资本与固定资本形成 & $N\times(T+1)$ & 初始资本、历史真实投资、折旧率及资产分类；资本存量不能由当年投资额直接替代。\\
+工资与价格 & 地区／部门$\times$时期 & 单位效率劳动工资、出厂价、采购价及地区消费价格；不把名义收入差当作实际购买力差。\\
+抚养与照料 & 地区$\times$儿童年龄／家庭类型 & 校准 $\chi,\ell$，核对工时与消费等价单位。\\
+成本情景 & 贸易 $N^2S$、迁移 $N^2$ 每期 & $\tau,\kappa$ 保留为变量；对角分别为 $1,0$，非对角不预设对称。\\
+\end{longtable}}
+迁移和贸易成本每期分别有 $N(N-1)$、$N(N-1)S$ 个非对角元素；在数据不足时，可对成本路径设置可解释的参数化限制，但不能未经说明把所有双边成本都宣称为单独识别。
+
+\subsection{共同结构参数与份额的校准公式}
+若使用跨地区汇总来校准共同技术参数，可按一致的基期计算
+\begin{align}
+ \gamma_{sq}&=\frac{\sum_iZ_{i,sq}}{\sum_iR_{is}},&
+ \nu_s&=\frac{\sum_i\mathrm{VA}_{is}}{\sum_iR_{is}}
+ =1-\sum_q\gamma_{sq},\\
+ \alpha_s&=1-\frac{\sum_i\mathrm{LAB}_{is}}{\sum_i\mathrm{VA}_{is}},&
+ \pi_{ij,s}&=\frac{\mathcal T_{ij,s}}{\sum_k\mathcal T_{kj,s}}.
+ \label{eq:lg-calibration-technology}
+\end{align}
+共同消费与投资权重可由全部研究地区的相应部门支出份额构造。地区份额与共同参数存在差异时，应报告汇总拟合误差，而不能同时声称各地每项份额都被完全匹配。劳动报酬之外的增加值若含生产税、土地租金或混合收入，需先调整才能解释为模型中的资本收入。
+
+若迁移数据与模型的期末存活、成年进入及原地留存口径一致，记 $\mathcal Q^A_{ij,t}$ 为相应起点风险人口最终进入地区 $j$ 的人数，则
+\begin{equation}
+ m_{ij,t}^{\mathrm{data}}=\frac{\mathcal Q^A_{ij,t}}{\sum_k\mathcal Q^A_{ik,t}}.
+\end{equation}
+流动人口存量不是年度迁移流；多年调查窗口中的迁移概率也不能直接当作一年概率。所有年龄组共用迁移矩阵是本基准的限制，应在匹配数据时说明。
+
+贸易与迁移识别关系分别为
+\begin{align}
+ \log\frac{\pi_{ij,s,t}}{\pi_{jj,s,t}}
+ &=\log\frac{\zeta_{is}}{\zeta_{js}}
+ +(1-\sigma_s)\left(\log\tau_{ij,s,t}+\log p_{ist}-\log p_{jst}\right),\\
+ \vartheta\log\frac{m_{ij,t}}{m_{ii,t}}
+ &=V_{j,t+1}-V_{i,t+1}-\kappa_{ij,t}.
+\end{align}
+因而成本、技术、来源地权重、舒适度和效用尺度需要联合限制与归一化。初始资本可使用真实固定资本形成与折旧数据做永续盘存；若用 $K_{i0}\approx I_{i0}/(g_{I,i}+\delta)$ 作初值近似，应报告历史投资增长假设和敏感性，而非把该近似当作精确观测。
+
+人口普查资料及投入产出表渠道沿用原稿的官方来源\citep{nbs2020census,nbs2024io}。本次未重新提取或清洗工作目录的原始数据，也未生成新的实际地区参数。每项实证输入仍应记录数值、单位、年份、地区、来源、构造方法及不确定性。
+
+\section{多地区过渡路径的求解方案与源码核查口径}
+\label{sec:lg-solution}
+
+\subsection{后向价值与前向人口、资本的联立}
+对足够长的截断期限 $T$，可用堆叠的非线性互补系统，或带阻尼的后向--前向迭代：
+\begin{enumerate}
+ \item 读入 $N,S,J$、共同结构参数、继承状态与全部外生路径，检查 $f\geq0$、成本对角、存活率和 $h_{it}>0$。
+ \item 构造终端延伸。若外生生育率不支持人口水平稳态，则使用与人口增长或收缩相容的远期延伸，不强制固定全国成年人口。
+ \item 给定候选人口、资本与价格路径，利用部门成本、CES 价格和投入产出系统解当期生产贸易块，使用稀疏的 $NS\times NS$ 结构减少存储。
+ \item 后向求工人价值并更新 $\mathsf M_t$。采用 $\LSE(z)=z_{\max}+\log\sum_j\exp(z_j-z_{\max})$ 避免指数溢出。
+ \item 从真实继承状态出发，前向更新出生与年龄队列；所有者消费、投资和资本路径与影子价值、预算及非负投资互补条件同时求解。
+ \item 调整价格、价值及配置路径，使劳动、资本、商品与所有者预算出清；使用阻尼、线搜索或互补算法处理零投资角点。
+ \item 从求得的人口和工时水平计算地区人数份额、效率劳动份额与地区部门联合份额，不用份额归一化替代人口总量方程。
+ \item 在各组最大归一化残差满足精度要求后，延长终端期限，比较近端空间份额、迁移和资本响应的稳定性；终端空间份额稳定不等于人口水平稳定。
+\end{enumerate}
+迁移依赖未来价值，投资依赖未来消费与租金，因此不能只按时间单向逐期计算。终端不能无条件令 $V_{iT}=0$ 或 $K_{i,T+1}=0$，否则会诱发人为的末期行为。迭代程序不预设必然收敛；必要时应调整初值、阻尼或求解算法。
+
+\subsection{市场、人口与互补条件的残差}
+定义 $\operatorname{rel}(a,b)=|a-b|/\max\{1,|a|,|b|\}$。至少分别记录
+\begin{align}
+ \varepsilon^L_{it}&=\operatorname{rel}\left(\sum_sL_{ist},n_{it}-\ell D_{it}\right),\\
+ \varepsilon^K_{it}&=\operatorname{rel}\left(\sum_sK_{ist},K_{it}\right),\\
+ \varepsilon^G_{ist}&=\operatorname{rel}\left(R_{ist},\sum_j\pi_{ij,s,t}E_{jst}\right),\\
+ \varepsilon^B_{it}&=\operatorname{rel}\left(\pc_{it}C^k_{it}+\invp_{it}I_{it},r_{it}K_{it}\right),\\
+ \varepsilon^{\mathrm{acc}}_{it}&=\operatorname{rel}\left(K_{i,t+1},(1-\delta)K_{it}+I_{it}\right).
+\end{align}
+还须核查 $\sum_jm_{ij,t}=1$、$\sum_i\pi_{ij,s,t}=1$、人口队列、出生时点、全国人口守恒、GDP 恒等式和地区贸易总值平衡，以及 Bellman 方程、影子价值和横截条件的截断近似。
+
+互补残差可用分别归一化后的 $\widetilde I_{it}$ 与 $\widetilde s_{it}$（后者对应 $\invp_{it}-q^K_{it}$）构造
+\begin{equation}
+ \varepsilon^{\mathrm{comp}}_{it}
+ =\left|\sqrt{\widetilde I_{it}^{\,2}+\widetilde s_{it}^{\,2}}
+ -\widetilde I_{it}-\widetilde s_{it}\right|.
+\end{equation}
+对空间分布结果，还应核查 $\sum_i\lambda^n_{it}=\sum_i\lambda^L_{it}=1$、$\sum_{i,s}\Lambda^L_{ist}=1$，以及式\eqref{eq:lg-spatial-share-law}的成年进入与净迁移分解。份额响应须满足式\eqref{eq:lg-spatial-response-zero-sum}；集中度应位于 $[1/N,1]$。另须核验成年进入滞后、迁移概率变化的行和为零，以及地区水平变化加总等于全国水平变化。本次仅书写理论和源码，\textbf{未运行上述多地区数值求解或均衡残差检验}；两地区原有数值核查不能直接宣称为空间分布版本已经通过的完整验证。
+
+\appendix
+\section{与两地区原稿的逐项对应}
+\label{sec:lg-reduction}
+\begin{table}[htbp]
+\centering
+\caption{地区数推广与基础假设的对应}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}YY}
+\toprule 模块 & 两地区原稿 & 本稿\\\midrule
+研究对象 & 生育率与两地区劳动力空间分布 & 同一研究问题推广到 $N$ 地区，保留人数、效率劳动与地区部门联合份额\\
+成年工人人数符号 & $N_{it}$ & 改记 $n_{it}$；经济含义相同\\
+地区集合 & $\{1,2\}$ & $\{1,\ldots,N\}$\\
+生育率与成年进入 & 外生 $f_{it}$、滞后 $J$ 年 & 保持不变，增加迁移链的矩阵表示\\
+劳动供给 & $L_{it}=N_{it}-\ell D_{it}$ & $L_{it}=n_{it}-\ell D_{it}$\\
+迁移与儿童随迁 & 两个备选地区、共同家庭概率 & $N$ 个备选地区，家庭概率设定不变\\
+商品来源 & 每部门两个地区品种 & 每部门 $N$ 个地区品种\\
+资本积累 & 本地所有者、非负投资 & 预算、欧拉和互补条件不变\\
+部门结构 & 一般 $S$，示例 $S=2$ & 保留一般 $S$ 与共同投入产出参数\\
+金融闭合 & 无跨地借贷和转移 & 保持不变，每地对所有其他地区贸易总值平衡\\
+求解与数据 & 后向--前向联立、实际数据待校准 & 扩大状态与双边矩阵维度，未声称已估计\\\bottomrule
+\end{tabularx}
+\end{table}
+
+令 $N=2$、并将 $n_{it}$ 对应回原稿 $N_{it}$，人口更新退化为
+\begin{align}
+ n_{1,t+1}&=(1-m_{12,t})\widetilde n_{1t}+m_{21,t}\widetilde n_{2t},\\
+ n_{2,t+1}&=m_{12,t}\widetilde n_{1t}+(1-m_{21,t})\widetilde n_{2t}.
+\end{align}
+迁移概率退化为
+\begin{equation}
+ m_{12,t}=\frac{1}{1+\exp[(V_{1,t+1}-V_{2,t+1}+\kappa_{12,t})/\vartheta]},
+\end{equation}
+商品价格与贸易份额中的来源求和变成两项。地区贸易总值平衡式\eqref{eq:lg-regional-trade-balance}退化为
+\begin{equation}
+ \sum_s\mathcal T_{12,s,t}=\sum_s\mathcal T_{21,s,t}.
+\end{equation}
+对称特例中的 $\mathcal D_N(\tau)$ 在 $N=2$ 时也等于两地区稿的贸易价格楔子。人口、生产、迁移、资本和市场出清的基础结构与 \texttt{fertility\_2region\_v01.tex} 对应；两份 V01 均以劳动力空间分布为研究对象，并区分一般数量关系、完整动态均衡与随后定义的反事实比较，不额外固定全国人口，也不新增生育最优化。
+
+\section{主要向量、矩阵与数量符号}
+{\small
+\begin{longtable}{p{0.27\textwidth}p{0.62\textwidth}}
+\toprule 符号 & 含义与维度\\\midrule\endfirsthead
+\toprule 符号 & 含义与维度\\\midrule\endhead
+\bottomrule\endfoot
+$N,S,J$ & 地区数、部门数、成年进入年龄\\
+$\bm n_t,\bm H_{a,t}$ & 成年工人、年龄 $a$ 儿童列向量，均为 $N\times1$\\
+$\mathsf F_t$ & 生育率对角矩阵，$N\times N$；与最终需求向量 $\bm F_t$ 区分\\
+$\mathsf M_t$ & 迁移概率矩阵，起点行、终点列，行和为一\\
+$\mathsf U_t$ & $\mathsf M_t^{\mathsf T}$，人口列向量的转移矩阵，列和为一\\
+$\mathcal U_{t,h},S_a$ & $h$ 期迁移矩阵连乘、出生至年龄 $a$ 的累计存活率\\
+$\mathsf A_t,\bm z_t$ & 条件人口推进矩阵 $NJ\times NJ$、继承人口状态 $NJ\times1$\\
+$\bm L_t,D_{it},d_{it},h_{it}$ & 地区劳动向量、儿童数、抚养比、每人工时\\
+$\lambda^n_{it},\lambda^L_{it}$ & 地区成年劳动力人数占全国份额、地区效率劳动占全国份额\\
+$\lambda^L_{ist},\Lambda^L_{ist}$ & 部门占本地劳动的份额、地区部门占全国劳动的联合份额\\
+$e_{it},\mathrm{NM}_{it}$ & 本期末迁移前的新增成年人数、本期末成人净迁移\\
+$\mathrm{HHI}^n_t,\mathrm{HHI}^L_t$ & 按人数份额和效率劳动份额计算的空间集中度\\
+$\mathcal D^n_t,\mathcal D^L_t$ & 反事实与基准之间的地区份额差异，均为总变差距离\\
+$\Pi_t^s$ & 部门 $s$ 贸易来源矩阵，起点行、目的地列，列和为一\\
+$\mathsf B_t,\mathsf G$ & 商品销售分配和本地投入产出矩阵，均为 $NS\times NS$\\
+$\bm R_t,\bm E_t,\bm F_t$ & 总产值、总支出、最终需求向量，均为 $NS\times1$\\
+$K_{it},I_{it},C^k_{it}$ & 本地资本、实物投资和资本所有者消费\\
+$w_{it},r_{it},p_{ist},P_{ist}$ & 效率工资、资本租金、出厂价和部门复合品价\\
+$\pc_{it},\invp_{it},q^K_{it}$ & 消费价格、投资品价格和期末安装资本影子价值\\
+$\tau_{ij,s,t},\kappa_{ij,t}$ & 冰山贸易成本与效用迁移成本，均保留为变量\\
+$\Omega_{ji,t}^{(J)}$ & 地区 $i$ 出生队列在 $J$ 年迁移链后落在 $j$ 的条件权重\\
+$\mathcal R^n_{ji},\mathcal R^L_{ji}$ & 市场重新出清后的地区人数份额、效率劳动份额动态响应\\
+$\mathcal M^n_{ji},\mathcal M^L_{ji}$ & 用于总量核查的人数与效率劳动水平响应，不等同于空间份额响应\\
+\end{longtable}}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

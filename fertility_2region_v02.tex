@@ -1,0 +1,939 @@
+% !TEX program = latexmk
+% !TEX encoding = UTF-8
+% latexmk 读取同目录 .latexmkrc，以 XeLaTeX 自动多轮构建，直至引用稳定。
+% 手工构建：在本文件目录运行 latexmk -xelatex fertility_2region_v02.tex。
+% 文献条目由文末 thebibliography 提供，无需单独运行 BibTeX。
+% 不估计、不填入未经验证的参数值。
+% 两地区、外生生育率、前瞻性迁移、儿童队列、住房与财政闭合。
+\documentclass[UTF8,a4paper,zihao=-4,fontset=windows]{ctexart}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[authoryear,round]{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!45!black,breaklinks=true]{hyperref}
+\usepackage{bookmark}
+\setlist{nosep,leftmargin=2em}
+\setlength{\parskip}{0.35em}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\arraystretch}{1.18}
+\numberwithin{equation}{section}
+\newcommand{\E}{\mathbb E}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\B}{\mathrm B}
+\newcommand{\CF}{\mathrm{CF}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\hypersetup{pdftitle={外生生育率与城市劳动力空间分布：两地区动态空间一般均衡模型}}
+
+\title{外生生育率与城市劳动力空间分布\\
+  ——两地区动态空间一般均衡模型}
+\author{理论模型与反事实研究框架}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本文构建一个包含两地区商品贸易、住房拥挤、育儿负担和前瞻性劳动力迁移的动态空间一般均衡模型。生育率为外生给定的地区年度路径，出生人数由该路径与当期成年人口共同决定。儿童经过固定年限进入成年劳动力。生育在短期通过照料时间影响劳动投入，并通过成人等价消费影响地区吸引力；在长期通过人口队列和迁移影响劳动力的地区份额。模型明确居民与企业的最优化、冰山贸易成本、迁移概率、人口运动、租金归属、补贴融资和市场出清。基准反事实保持生育率路径不变，考察生育补贴的收入、税收和空间重配效应；另可输入外部给定的生育率响应路径，评估补贴与出生变化的联合情景。本文只提供理论和量化实施所需的数据、参数及求解条件，不报告未经估计的政策效果。
+\end{abstract}
+\tableofcontents
+\newpage
+
+\section{经济环境、文献依据与时序}
+\label{sec:environment}
+
+\subsection{空间结构与模型边界}
+地区集合为 $\mathcal R=\{1,2\}$，$i,j,k\in\mathcal R$ 均为地区索引，时间为 $t=0,1,\ldots$，一期为一年。地区1可解释为目标城市或目标城市组，地区2为国内其余地区。两地共同构成封闭经济；若只选两个城市，则需将未建模地区的流量纳入外部账户，或将其余地区合并到地区2，才能使用下文的封闭条件。双边下标 $ij$ 均表示\textbf{从地区 $i$ 到地区 $j$}，包括贸易和迁移。索引、上标和主要变量的统一口径见附录\ref{app:notation}。
+
+本文以 \citet{redding2017quantitative} 讨论的商品贸易、要素流动、地区禀赋和本地固定要素为基础，采用地区来源差异化的 CES 商品、完全竞争生产和住房市场。动态迁移借鉴 \citet{kleinman2023dynamic} 的前瞻性离散选择思路；儿童队列、外生生育率和补贴财政账户为本文加入的机制。这是一种为研究问题选择的模型组合，并非将综述中的某个模型原样搬用。
+
+基准模型有一类可贸易生产活动，以及不可贸易的住房服务。生产用地 $\bar F_i>0$ 与住房服务供给 $\bar S_i>0$ 分别固定，不能跨地区转移。模型的动态来源是\textbf{儿童成长、成年人口更新和迁移调整}；基准不引入资本积累、金融资产、国际贸易、失业和退休部门。所有成年居民均属于模型中的劳动人口，儿童不供给劳动。因此，模型人口不能未经口径调整直接等同于现实全部常住人口。
+
+\subsection{人口状态与地区内共担假设}
+以 $N_{it}>0$ 表示地区 $i$ 在 $t$ 期参与生产和消费的成年居民人数，以 $H_{i,a,t}$ 表示年龄为 $a=0,\ldots,J-1$ 的儿童人数。其中 $J$ 为正整数，儿童满 $J$ 岁进入成年劳动力。初始给定各地区成年人数 $N_{i0}$ 和年龄为 $1,\ldots,J-1$ 的已有儿童队列；零岁队列由当期出生关系生成。
+
+为得到仅含地区总量的可解基准，假定地区内的儿童照料、家庭消费负担和补贴收入由成年居民共同承担、共享。地区内每名成人因而面对相同的平均抚养负担与可支配收入，儿童随监护家庭迁移；监护人死亡后的儿童先在原地区重新匹配监护家庭。该共担安排也覆盖新成年者，且没有独立的资源消耗。租金通过本地公共资产基金向当期成年居民等额分配。
+
+这是有实质含义的简化：模型识别的是\textbf{地区平均育儿负担和地区间财政分配}带来的空间效应。若需要识别有孩、无孩家庭之间的再分配，或家庭子女数量对迁移的影响，应将子女年龄向量加入家庭状态，再追踪家庭分布，不能直接沿用代表性居民的迁移概率。
+
+\subsection{信息与一期内时序}
+外生基本面和政策规则的未来路径在初始期公布，居民对其完美预见。人口总量采用大人口下的确定性比例近似，出生、存活和迁移按相应率推进，忽略个体抽样波动；迁移偏好冲击在不同居民、目的地和时期之间独立。每期顺序为：
+\begin{enumerate}
+  \item 继承成年人口 $N_{it}$、年龄为 $1,\ldots,J-1$ 的儿童队列及固定要素；按外生生育率产生当期新生儿。
+  \item 形成抚养负担和劳动投入；企业生产，居民获得工资、租金分红与补贴，缴税并选择商品和住房消费；当期市场出清。
+  \item 成年居民和儿童按给定概率存活，儿童年龄推进，达到 $J$ 岁者成年。
+  \item 存活成人及新成年者观察迁移冲击，选择下一期居住地；未成年儿童随监护家庭迁移。下一期在目的地生产、消费和享受政策。
+\end{enumerate}
+迁移发生在期末，不改变本期生产地。生育率按下一期实际居住地适用，迁移成本在续期效用中计入。
+
+\section{外生生育率与居民决策}
+\label{sec:households}
+
+\subsection{生育率与出生人数}
+给定每名成年居民对应的年度出生数 $f_{it}\geq0$，有
+\begin{equation}
+  B_{it}=f_{it}N_{it},\qquad H_{i,0,t}=B_{it}.
+  \label{eq:births}
+\end{equation}
+$\{f_{it}\}_{i,t}$ 是外生输入，居民\textbf{不选择}生育数量。出生人数 $B_{it}$ 随 $N_{it}$ 变化，因此外生生育率不意味着出生人数外生。
+
+令 $z$ 为育龄女性的年龄索引，$\mathcal A_F$ 为纳入统计的育龄女性年龄集合，其范围与数据口径一致；若采用年龄组，则 $z$ 对应互不重叠的年龄组。$g_{i,z,t}$ 表示地区 $i$、年份 $t$、年龄 $z$ 的每名女性年度出生数，$F^w_{i,z,t}$ 为同地区、同年份、同年龄的女性人数。上标 $w$ 用于标记女性人口，与生产用地 $F_{it}$ 区分。上标 $\mathrm{data}$ 表示由观测数据统计或换算的量，其中 $B^{\mathrm{data}}_{it}$ 为年度出生人数，$N^{\mathrm{data}}_{it}$ 为与模型定义一致的成年劳动人口。由此换算
+\begin{equation}
+  B^{\mathrm{data}}_{it}=\sum_{z\in\mathcal A_F}g_{i,z,t}F^w_{i,z,t},
+  \qquad
+  f_{it}=\frac{B^{\mathrm{data}}_{it}}{N^{\mathrm{data}}_{it}}.
+  \label{eq:fertility-conversion}
+\end{equation}
+总和生育率、粗出生率与 $f_{it}$ 的分母和时间含义不同，不能直接互换。以 $f_{it}$ 为外生路径，还意味着不单独追踪育龄女性年龄结构；若要求固定年龄别女性生育率，则需加入年龄与性别状态。式 \eqref{eq:fertility-conversion} 的统计逻辑与单位换算见附录\ref{app:fertility-conversion}。
+
+\subsection{抚养负担与劳动供给}
+定义儿童总数、平均抚养比和每名成人可提供的劳动时间：
+\begin{align}
+  D_{it}&=\sum_{a=0}^{J-1}H_{i,a,t},\qquad
+  d_{it}=\frac{D_{it}}{N_{it}},\label{eq:dependency-ratio}\\
+  \ell_{it}&=1-\frac{\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}}{N_{it}},
+  \qquad 0<\ell_{it}\leq1,\quad \varphi_a\geq0,
+  \label{eq:individual-labor-time}\\
+  L_{it}&=N_{it}\ell_{it}
+  =N_{it}-\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}.
+  \label{eq:labor-supply}
+\end{align}
+$D_{it}$ 为儿童总人数，$d_{it}$ 为每名成人对应的儿童人数。每名成人可用于市场劳动和儿童照料的年度时间禀赋归一化为1，$\varphi_a$ 是照料一名 $a$ 岁儿童占用的成人年度时间单位，$\ell_{it}$ 是扣除照料负担后的人均市场劳动时间。$L_{it}$ 是以完整成人年度劳动时间为单位的总劳动投入，$N_{it}$ 是成年劳动人数。基准中每名成人具有相同的单位工时效率。劳动时间由照料需要给定，居民没有额外的闲暇选择。应检查所有模拟路径上的 $\ell_{it}>0$；不能在出现负工时时继续使用模型。时间约束及式 \eqref{eq:individual-labor-time} 的推导见附录\ref{app:labor-time}。
+
+用成人等价尺度刻画儿童对商品和住房需求的影响：
+\begin{equation}
+  e^C_{it}=1+\chi_Cd_{it},\qquad
+  e^H_{it}=1+\chi_Hd_{it},\qquad \chi_C,\chi_H\geq0.
+  \label{eq:equivalence}
+\end{equation}
+$\chi_C$ 和 $\chi_H$ 分别是一名儿童相对于一名成人的商品消费与住房服务需求权重；$e^C_{it}$ 和 $e^H_{it}$ 分别是每名成人对应家庭需求的商品和住房成人等价尺度，二者均无量纲。常数1对应成年人自身的需求。这些尺度表示家庭总消费折算为成人等价消费时的需求差异。它们并非另加的一笔购买支出，儿童消费已经包含在家庭总消费中。基准采用固定消费支出份额：在相同收入和价格下，等价尺度改变福利，而不单独改变商品与住房的支出比例。若数据表明有孩家庭具有不同的支出份额或最低住房需要，应进一步扩展需求系统。式 \eqref{eq:equivalence} 的构造和福利解释见附录\ref{app:equivalence}。
+
+\subsection{预算约束与当期最优消费}
+令 $c_{it}$ 和 $h_{it}$ 分别为每名成人对应的家庭可贸易复合品消费和住房服务消费，均包含其分摊的儿童消费。$P_{it}$ 为复合品价格，$R_{it}$ 为单位住房服务租金，$w_{it}$ 为单位效率劳动工资，$a_{it}>0$ 为地区舒适度。居民当期效用为
+\begin{equation}
+  u_{it}=\log a_{it}
+   +\gamma\log\!\left(\frac{c_{it}}{e^C_{it}}\right)
+   +(1-\gamma)\log\!\left(\frac{h_{it}}{e^H_{it}}\right),
+  \qquad 0<\gamma<1.
+  \label{eq:flow-utility}
+\end{equation}
+其中 $u_{it}$ 为给定消费配置的当期效用，$\gamma$ 为商品消费的效用权重，也等于最优预算中的商品支出份额，$1-\gamma$ 为住房支出份额。$c_{it}$ 和 $h_{it}$ 均为实物或服务数量，而非货币支出。
+令 $\vartheta_t$ 为全国统一劳动所得税率，$\mathcal D_{it}$ 为人均租金分红，$b_{it}$ 为每名新生儿获得的\textbf{复合品实物购买力}。一笔出生补贴的货币金额为 $P_{it}b_{it}$，允许 $b_{it}=0$。这里 $b_{it}$ 是给定制度下的当期补助规则，税率和分红在第\ref{sec:fiscal}节的财政预算与租金分配条件下共同确定。人均可支配收入为
+\begin{equation}
+  y_{it}=(1-\vartheta_t)w_{it}\ell_{it}
+     +\mathcal D_{it}+P_{it}b_{it}f_{it},\qquad y_{it}>0.
+  \label{eq:disposable-income}
+\end{equation}
+每个地区内的居民将价格、税率、分红和平均抚养负担视为给定，求解
+\begin{equation}
+  \max_{c_{it}>0,\ h_{it}>0} u_{it}
+  \quad\text{s.t.}\quad
+  P_{it}c_{it}+R_{it}h_{it}\leq y_{it}.
+  \label{eq:household-problem}
+\end{equation}
+没有储蓄或借贷，当期预算完全用尽，最优需求为
+\begin{equation}
+  c_{it}=\frac{\gamma y_{it}}{P_{it}},\qquad
+  h_{it}=\frac{(1-\gamma)y_{it}}{R_{it}}.
+  \label{eq:household-demands}
+\end{equation}
+代回效用，得到用于迁移决策的间接流效用 $v_{it}$，即居民在给定收入和价格下完成当期消费最优化后的效用：
+\begin{align}
+  v_{it}
+  &=\log a_{it}+\log y_{it}
+    -\gamma\log P_{it}-(1-\gamma)\log R_{it}\notag\\
+  &\quad-\gamma\log e^C_{it}-(1-\gamma)\log e^H_{it}
+    +\gamma\log\gamma+(1-\gamma)\log(1-\gamma).
+  \label{eq:indirect-utility}
+\end{align}
+由此，育儿照料减少工时并影响收入，儿童消费需求影响成人等价效用，住房价格和商品价格共同影响地区吸引力。现金补贴在基准中不直接改变 $\varphi_a$；若研究托育供给政策，需要另设服务生产或照料时间的政策映射。
+
+\section{企业决策、贸易成本与商品需求}
+\label{sec:firms-trade}
+
+\subsection{生产技术与完全竞争}
+地区 $i$ 生产一个地区来源差异化的可贸易品。代表性生产技术为
+\begin{equation}
+  Y_{it}=A_{it}F_{it}^{\alpha}L_{it}^{1-\alpha},
+  \qquad A_{it}>0,\quad 0<\alpha<1.
+  \label{eq:production}
+\end{equation}
+$Y_{it}$ 为包含本地交付、跨地交付及冰山损耗在内的地区总产出，$A_{it}$ 为全要素生产率，$\alpha$ 为生产用地的产出弹性；$F_{it}$ 为生产用地服务，$r_{it}$ 为单位生产用地服务租金，$p_{it}$ 为地区产品的出厂价格。企业将生产率和要素价格视为给定，求解
+\begin{equation}
+  \max_{F_{it},L_{it}\geq0}
+  \left\{p_{it}A_{it}F_{it}^{\alpha}L_{it}^{1-\alpha}
+      -r_{it}F_{it}-w_{it}L_{it}\right\}.
+  \label{eq:firm-problem}
+\end{equation}
+在正产出的均衡中，利润为零，单位成本定价与要素收入份额满足
+\begin{align}
+  p_{it}&=\frac{1}{A_{it}}
+    \left(\frac{r_{it}}{\alpha}\right)^{\alpha}
+    \left(\frac{w_{it}}{1-\alpha}\right)^{1-\alpha},
+    \label{eq:unit-cost}\\
+  w_{it}L_{it}&=(1-\alpha)p_{it}Y_{it},\qquad
+  r_{it}F_{it}=\alpha p_{it}Y_{it}.
+  \label{eq:factor-payments}
+\end{align}
+生产用地的固定供给使劳动增加后出现要素稀缺与边际产出调整，是地区间分散力量之一。基准中 $A_{it}$ 和 $a_{it}$ 均为外生路径。可选的生产集聚设定及其对均衡定义的修改单独放在附录\ref{app:agglomeration}。
+
+\subsection{冰山贸易成本}
+从 $i$ 向 $j$ 运送商品，交付一单位需要发出 $\tau_{ij,t}$ 单位，其中
+\begin{equation}
+  \tau_{ii,t}=1,\qquad \tau_{ij,t}\geq1\ (i\ne j),\qquad
+  p_{ij,t}=\tau_{ij,t}p_{it}.
+  \label{eq:iceberg}
+\end{equation}
+其中 $p_{ij,t}$ 为来源地 $i$ 产品运抵目的地 $j$ 的单位交付价格。允许 $\tau_{12,t}\ne\tau_{21,t}$。冰山损耗消耗实物产出，不形成关税收入或独立运输企业利润。贸易成本不同于下文的迁移效用成本。
+
+\subsection{CES 复合品与贸易份额}
+令 $q_{ij,t}$ 表示 $i$ 产品在 $j$ 的\textbf{实际交付量}。地区 $j$ 的复合品为
+\begin{equation}
+  Q_{jt}=\left[\sum_{i=1}^2\omega_i^{1/\sigma}
+       q_{ij,t}^{(\sigma-1)/\sigma}\right]^{\sigma/(\sigma-1)},
+  \quad \sigma>1,\quad \omega_i>0,\quad\sum_i\omega_i=1.
+  \label{eq:ces}
+\end{equation}
+其中 $Q_{jt}$ 为地区复合品的实物数量，$\sigma$ 为不同地区来源产品之间的替代弹性，$\omega_i$ 为来源地 $i$ 的 CES 权重。给定 $Q_{jt}$ 最小化采购成本，可得
+\begin{align}
+  P_{jt}&=\left[\sum_{i=1}^2\omega_i
+           (\tau_{ij,t}p_{it})^{1-\sigma}\right]^{1/(1-\sigma)},
+           \label{eq:price-index}\\
+  q_{ij,t}&=\omega_i\left(\frac{\tau_{ij,t}p_{it}}{P_{jt}}\right)^{-\sigma}Q_{jt},
+           \label{eq:bilateral-quantity}\\
+  \pi_{ij,t}&=\frac{\omega_i(\tau_{ij,t}p_{it})^{1-\sigma}}
+       {\sum_{k=1}^2\omega_k(\tau_{kj,t}p_{kt})^{1-\sigma}},
+  \qquad\sum_{i=1}^2\pi_{ij,t}=1.
+  \label{eq:trade-share}
+\end{align}
+在本下标约定下，$\pi_{ij,t}$ 是\textbf{目的地 $j$ 对来源地 $i$ 的支出份额}，加总的是来源地索引。令 $E_{jt}$ 为目的地 $j$ 的可贸易复合品货币总支出，$X_{ij,t}$ 为来源地 $i$ 向目的地 $j$ 销售所获得的货币收入，则
+\begin{equation}
+  E_{jt}=P_{jt}Q_{jt},\qquad
+  X_{ij,t}=\pi_{ij,t}E_{jt}=p_{it}\tau_{ij,t}q_{ij,t}.
+  \label{eq:trade-values}
+\end{equation}
+贸易弹性为 $\sigma-1$。下文基准没有中间投入，$E_{jt}$ 只有家庭最终商品支出。
+
+\section{前瞻性迁移与人口动态}
+\label{sec:migration-demography}
+
+\subsection{迁移价值与选择概率}
+令 $s_A\in(0,1]$ 为成人每期存活率，$\beta\in(0,1)$ 为时间贴现因子。基准将所有存活成人视为持续工作的居民，不另设退休期。$V_{it}$ 是处于 $i$ 的成人在本期消费前的期望终身效用；死亡后的效用归零。
+
+存活成人在期末选择下一期地区。$\kappa_{ij,t}\geq0$ 为从 $i$ 到 $j$ 的一次性迁移效用成本，$\kappa_{ii,t}=0$；它与下一期价值同单位，随续期效用一起贴现，不进入商品资源约束。下式省略居民个体索引，个体偏好冲击为
+\begin{equation}
+  \varepsilon_{ij,t}=\nu(\widetilde\varepsilon_{ij,t}-\gamma_E),
+  \qquad \nu>0,
+  \label{eq:migration-shocks}
+\end{equation}
+其中 $\widetilde\varepsilon$ 独立服从标准第一类极值分布，$\gamma_E$ 为欧拉常数，$\nu$ 为冲击的效用尺度，$\varepsilon_{ij,t}$ 为中心化后的地区选择冲击。$\E$ 表示对未来尚未实现的个体迁移冲击取期望；给定完美预见的基本面路径，未来价格和人口路径不再另含总量随机性。如此中心化后，极值期望可写为不含额外常数的对数加总形式。Bellman 方程为
+\begin{align}
+  V_{it}
+   &=v_{it}+\beta s_A\E\!\left[
+       \max_{j\in\{1,2\}}
+       \{V_{j,t+1}-\kappa_{ij,t}+\varepsilon_{ij,t}\}\right]\notag\\
+   &=v_{it}+\beta s_A\nu
+       \log\!\left[\sum_{j=1}^2
+       \exp\!\left(\frac{V_{j,t+1}-\kappa_{ij,t}}{\nu}\right)\right].
+  \label{eq:bellman}
+\end{align}
+相应的条件迁移概率为
+\begin{equation}
+  m_{ij,t}=
+   \frac{\exp[(V_{j,t+1}-\kappa_{ij,t})/\nu]}
+        {\sum_{k=1}^2\exp[(V_{k,t+1}-\kappa_{ik,t})/\nu]},
+  \qquad \sum_{j=1}^2m_{ij,t}=1.
+  \label{eq:migration-probability}
+\end{equation}
+这里先存活、再选择迁移，故 $\beta s_A$ 在式 \eqref{eq:bellman} 的极值期望之外，不能在保持相同成本和冲击定义的同时又将它重复放入 logit 指数。两地区向外迁移概率具体为
+\begin{align}
+  m_{12,t}&=\left[1+\exp\!\left(
+      \frac{V_{1,t+1}-V_{2,t+1}+\kappa_{12,t}}{\nu}\right)\right]^{-1},\\
+  m_{21,t}&=\left[1+\exp\!\left(
+      \frac{V_{2,t+1}-V_{1,t+1}+\kappa_{21,t}}{\nu}\right)\right]^{-1}.
+\end{align}
+本地留存概率分别为 $1-m_{12,t}$ 和 $1-m_{21,t}$。有迁移成本和偏好异质性时，两地实质工资或居民价值不必相等；空间均衡由最优选择概率和人口运动共同刻画。
+
+\subsection{儿童随迁、成年进入与人口更新}
+儿童年龄别存活率为 $s^C_a\in(0,1]$，表示当前 $a$ 岁儿童存活至下一期 $a+1$ 岁的概率；当 $a=J-1$ 时对应存活至成年。基准在两地相同。由于地区内共担，家庭迁移概率不随个人子女数量变化，儿童在原地区匹配监护人后继承相同的条件迁移概率。儿童队列满足
+\begin{equation}
+  H_{j,a+1,t+1}=\sum_{i=1}^2m_{ij,t}s^C_aH_{i,a,t},
+  \qquad a=0,\ldots,J-2.
+  \label{eq:child-transition}
+\end{equation}
+地区 $i$ 期末、迁移前的新成年人数和成年人口池为
+\begin{equation}
+  A^E_{it}=s^C_{J-1}H_{i,J-1,t},\qquad
+  \widetilde N_{it}=s_AN_{it}+A^E_{it}.
+  \label{eq:entrants}
+\end{equation}
+新成年者在选择下一期地区时与其他成人面对相同的平均预算和价值，故成年人口更新为
+\begin{equation}
+  N_{j,t+1}=\sum_{i=1}^2m_{ij,t}
+                 (s_AN_{it}+A^E_{it}).
+  \label{eq:adult-transition}
+\end{equation}
+下一期新生儿由 $H_{j,0,t+1}=f_{j,t+1}N_{j,t+1}$ 重新生成，不能用儿童随迁方程再生成一次。初始给定 $N_{i0}$ 与 $H_{i,a,0}$（$a=1,\ldots,J-1$），而 $H_{i,0,0}=f_{i0}N_{i0}$ 由出生方程决定。
+
+两地区成年人口更新可展开为
+\begin{align}
+  N_{1,t+1}&=(1-m_{12,t})\widetilde N_{1t}
+                  +m_{21,t}\widetilde N_{2t},\\
+  N_{2,t+1}&=m_{12,t}\widetilde N_{1t}
+                  +(1-m_{21,t})\widetilde N_{2t}.
+  \label{eq:two-region-transition}
+\end{align}
+某期出生队列最早在 $J$ 期后进入劳动力；在此之前，其数量及成年进入地点已经受到存活和逐期随迁的共同影响。因此，不能简单将 $t-J$ 期本地出生数全部计为 $t$ 期本地新劳动力。
+
+\subsection{全国人口加总条件}
+定义全国成年劳动人数 $N_t=N_{1t}+N_{2t}$、全国新成年人数 $A^E_t=A^E_{1t}+A^E_{2t}$，并以 $B_t$ 表示全国年度出生人数，则
+\begin{align}
+  N_{t+1}&=s_AN_t+A^E_t,\qquad
+  \sum_jH_{j,a+1,t+1}=s^C_a\sum_iH_{i,a,t},\\
+  B_t&=f_{1t}N_{1t}+f_{2t}N_{2t}.
+  \label{eq:national-demography}
+\end{align}
+迁移不会直接创造或消灭人口。但当 $f_{1t}\ne f_{2t}$ 时，迁移改变人口在不同生育率地区的配置，进而改变全国出生人数；所以固定地区生育率路径仍可能使不同补贴情景的未来全国人口不同。若两地生育率和年龄别存活率均相同、初始全国队列相同，则迁移不会改变全国人口队列路径。
+
+\section{租金归属与生育补贴的财政闭合}
+\label{sec:fiscal}
+
+\subsection{固定要素所有权与居民分红}
+地区公共资产基金持有本地生产用地和住房，全部租金当期分配给本地成年居民：
+\begin{equation}
+  N_{it}\mathcal D_{it}=r_{it}\bar F_i+R_{it}\bar S_i.
+  \label{eq:rent-rebate}
+\end{equation}
+基金不消费、不储蓄，也不另增一类人口。迁入者从下一期享有目的地分红，迁出者失去原地区分红。该安排避免租金从经济中消失，并明确了迁移对他人分红的影响。替代所有权安排可以改变福利和空间结果，量化时需要检验其敏感性。
+
+\subsection{出生补贴与全国统一融资}
+基准补贴是\textbf{出生当期一次性发放}的居民出生补助。资格按出生当期的实际居住地确定；随后迁移不重复领取同一出生补贴。令 $G_{it}$ 为地区年度补贴总支出，$T_{it}$ 为本地区居民缴纳的年度劳动所得税总额，二者均为货币流量。地区补贴总支出、全国劳动税融资和税率为
+\begin{align}
+  G_{it}&=P_{it}b_{it}B_{it},\qquad
+  T_{it}=\vartheta_tw_{it}L_{it},\\
+  \sum_{i=1}^2G_{it}&=\sum_{i=1}^2T_{it},\qquad
+  \vartheta_t=
+    \frac{\sum_iP_{it}b_{it}B_{it}}{\sum_iw_{it}L_{it}},
+  \quad 0\leq\vartheta_t<1.
+  \label{eq:government-budget}
+\end{align}
+政府不举债、没有额外商品采购或行政成本。补贴为转移支付，不能在家庭消费之外再作为一笔商品需求计入出清。税率随税基、出生人数和商品价格共同调整，不能同时独立指定补贴和税率。
+
+以 $b_{it}$ 而不是固定名义金额指定政策，使其在价格归一化后仍有明确的实质含义。若实际政策以货币金额承诺，则应将其转换到统一价格基准，并明确物价指数化规则。也可将出生补贴改为按儿童年龄发放的年度津贴，此时将式 \eqref{eq:government-budget} 中的 $G_{it}$ 替换为
+\begin{equation}
+  G_{it}=P_{it}\sum_{a=0}^{J-1}b_{i,a,t}H_{i,a,t},
+  \label{eq:child-allowance}
+\end{equation}
+其中 $b_{i,a,t}$ 为地区 $i$ 在 $t$ 期向每名 $a$ 岁儿童发放的实质年度津贴，以本地复合品数量计量。在居民预算中用 $G_{it}/N_{it}$ 取代 $P_{it}b_{it}f_{it}$，同时重新规定随迁后资格。
+
+\subsection{共担假设对政策解释的约束}
+本地居民共享补贴与育儿成本，因此基准中的补贴主要通过地区间净财政转移 $G_{it}-T_{it}$ 改变地区相对吸引力。如果改为每个地区自行向同一批代表性居民征收等额人头税，且恰好有 $T_{it}=G_{it}$，则人均补贴和税额在预算中完全抵消；在固定生育率、劳动时间规则和其他基本面时，这种补贴不会改变配置。不能在该闭合下仍宣称补贴具有自动的迁移或生育促进效应。
+
+\section{市场出清与动态空间一般均衡}
+\label{sec:equilibrium}
+
+\subsection{劳动、生产用地和住房市场}
+每期各地区满足
+\begin{align}
+  L^{\mathrm{demand}}_{it}&=L_{it}=N_{it}\ell_{it},
+    & F_{it}&=\bar F_i,\label{eq:factor-clearing}\\
+  N_{it}h_{it}&=\bar S_i,
+    & R_{it}\bar S_i&=(1-\gamma)N_{it}y_{it}.
+    \label{eq:housing-clearing}
+\end{align}
+$L^{\mathrm{demand}}_{it}$ 为本地企业需求的效率劳动总量，与居民劳动供给采用相同的时间单位。劳动按本地工资出清，不存在跨地区通勤；迁移到达者只在下一期目的地供给劳动。住房价格由固定供给与全体家庭需求共同决定。
+
+\subsection{复合品和地区产品市场}
+当期复合品仅用于家庭消费，故
+\begin{equation}
+  Q_{it}=N_{it}c_{it},\qquad
+  E_{it}=P_{it}N_{it}c_{it}=\gamma N_{it}y_{it}.
+  \label{eq:composite-clearing}
+\end{equation}
+每地产品出清应包含贸易的冰山损耗：
+\begin{equation}
+  Y_{it}=\sum_{j=1}^2\tau_{ij,t}q_{ij,t},\qquad
+  p_{it}Y_{it}=\sum_{j=1}^2\pi_{ij,t}E_{jt}.
+  \label{eq:goods-clearing}
+\end{equation}
+式 \eqref{eq:goods-clearing} 中的两个等式分别是实物和价值表达，二者等价，不应作为两组独立约束重复计数。家庭总消费中已含儿童消费；住房为另一种本地服务，不进入可贸易品资源约束。
+
+\subsection{收入核算、贸易差额与名义归一化}
+令 $I_{it}=N_{it}y_{it}$ 为地区居民年度可支配收入总额，涵盖商品和住房支出；$E_{it}$ 仅表示其中用于可贸易复合品的支出。由居民预算、租金分红、要素支付和住房出清可得
+\begin{align}
+  I_{it}&=w_{it}L_{it}+r_{it}\bar F_i+R_{it}\bar S_i+G_{it}-T_{it},\\
+  E_{it}&=p_{it}Y_{it}+G_{it}-T_{it},\qquad
+  p_{it}Y_{it}-E_{it}=T_{it}-G_{it},
+  \label{eq:regional-accounting}\\
+  \sum_iE_{it}&=\sum_ip_{it}Y_{it}.
+  \label{eq:walras-accounting}
+\end{align}
+净受补助地区可以出现商品净进口；其差额由财政转移对应。除非 $G_{it}=T_{it}$，不能额外要求两地各自贸易平衡。全国财政平衡保证全国商品支出等于商品收入。
+
+价格只确定到共同倍数。每期选择
+\begin{equation}
+  p_{1t}=1
+  \label{eq:numeraire}
+\end{equation}
+为计价单位；其他名义价格和转移同时按相同尺度表达。该归一化不固定实际工资、实际收入或人口总量。
+
+\subsection{均衡定义与初始条件}
+以下均衡定义针对生产率与舒适度外生的基准设定。将前述初始人口状态记为
+\begin{equation}
+  \mathcal S_0=\{N_{i0},\ H_{i,a,0}:i=1,2;\ a=1,\ldots,J-1\},
+\end{equation}
+固定禀赋 $\{\bar F_i,\bar S_i\}$、结构参数
+$\{\alpha,\gamma,\sigma,\omega_i,\beta,\nu,J,s_A,s^C_a,
+\varphi_a,\chi_C,\chi_H\}$，以及外生路径
+$\{A_{it},a_{it},f_{it},\tau_{ij,t},\kappa_{ij,t},b_{it}\}$，
+一个完美预见动态空间一般均衡为价格、价值和配置的序列
+\begin{equation}
+  \left\{\begin{gathered}
+  p_{it},P_{it},w_{it},r_{it},R_{it},y_{it},\mathcal D_{it},\vartheta_t,\\
+  V_{it},c_{it},h_{it},Y_{it},L_{it},
+  q_{ij,t},\pi_{ij,t},m_{ij,t},N_{it},H_{i,a,t}
+  \end{gathered}\right\}_{t\geq0},
+\end{equation}
+使以下条件同时成立：
+\begin{enumerate}
+  \item 出生、照料时间和成人等价尺度满足式 \eqref{eq:births}--\eqref{eq:equivalence}；居民最优消费与迁移满足式 \eqref{eq:household-demands}、\eqref{eq:bellman} 和 \eqref{eq:migration-probability}。
+  \item 企业最优化、贸易定价与需求满足式 \eqref{eq:production}--\eqref{eq:factor-payments}、\eqref{eq:iceberg}--\eqref{eq:trade-values}。
+  \item 人口队列和成年人口按式 \eqref{eq:child-transition}--\eqref{eq:adult-transition} 更新，并与居民预期的未来状态一致。
+  \item 租金分配、财政预算和所有市场出清满足式 \eqref{eq:rent-rebate}、\eqref{eq:government-budget}、\eqref{eq:factor-clearing}--\eqref{eq:goods-clearing}，名义价格满足式 \eqref{eq:numeraire}。
+  \item 价格与消费为正，人口非负，$\ell_{it}>0$、$\vartheta_t<1$，且无限期价值存在并满足下述终端条件。
+\end{enumerate}
+基准无储蓄资产，因而无需额外添加资本 Euler 方程或资产横截条件。令 $T$ 为截断计算窗口的最后一期，并在无限期模型中令 $T\to\infty$。Bellman 问题需要排除任意终端价值；在有界流效用和成本下要求
+\begin{equation}
+  \lim_{T\to\infty}(\beta s_A)^{T-t}
+        \max_i|V_{iT}|=0.
+  \label{eq:value-terminal}
+\end{equation}
+对给定的有界价格与人口路径，$\beta s_A<1$ 使居民价值递归具有收缩性；这不等同于证明整个一般均衡路径存在或唯一。若人口、价格和效用不有界，须另验证贴现效用和终端条件，而不能直接援引有界收缩结论。
+
+\section{生育率如何改变劳动力的空间分布}
+\label{sec:spatial-outcomes}
+
+\subsection{结果变量：人数份额与效率劳动份额}
+本文主要结果为成年劳动人数的地区份额，补充结果为总工时的地区份额：
+\begin{equation}
+  \lambda^N_{it}=\frac{N_{it}}{N_t},\qquad
+  \lambda^L_{it}=\frac{L_{it}}{L_{1t}+L_{2t}},\qquad
+  \sum_i\lambda^N_{it}=\sum_i\lambda^L_{it}=1.
+  \label{eq:spatial-shares}
+\end{equation}
+二者的关系为
+\begin{equation}
+  \lambda^L_{it}=\frac{\lambda^N_{it}\ell_{it}}
+      {\sum_j\lambda^N_{jt}\ell_{jt}}.
+  \label{eq:headcount-hours}
+\end{equation}
+分母 $\sum_j\lambda^N_{jt}\ell_{jt}$ 为全国成年居民的人均劳动时间，以各地区成年人数份额为权重。即使成年人数未变，地区育儿工时损失不同也会改变效率劳动份额。故 $N_{it}$ 与 $L_{it}$ 需要分别报告。式 \eqref{eq:headcount-hours} 的代数推导与经济含义见附录\ref{app:headcount-hours}。
+
+\subsection{成年进入与净迁移的精确分解}
+定义包括新成年者在内的迁移流量
+\begin{equation}
+  M_{ij,t}=m_{ij,t}\widetilde N_{it},\qquad
+  \mathcal M_{it}=\sum_{j\ne i}M_{ji,t}-\sum_{j\ne i}M_{ij,t}.
+  \label{eq:migration-flows}
+\end{equation}
+$M_{ij,t}$ 为从 $t$ 期末到 $t+1$ 期初由地区 $i$ 转入地区 $j$ 的成年人数，$M_{ii,t}$ 为原地留存人数；$\mathcal M_{it}$ 为地区净迁入人数，正值表示净流入。二者均包括在期末刚成年的居民，均不包括仍未成年的随迁儿童。
+则成年人数和份额的运动可以精确写为
+\begin{align}
+  N_{i,t+1}-N_{it}
+     &=-(1-s_A)N_{it}+A^E_{it}+\mathcal M_{it},\\
+  \lambda^N_{i,t+1}-\lambda^N_{it}
+     &=\frac{A^E_{it}-\lambda^N_{it}A^E_t+\mathcal M_{it}}
+                  {N_{t+1}}.
+  \label{eq:share-decomposition}
+\end{align}
+第一部分 $A^E_{it}-\lambda^N_{it}A^E_t$ 衡量本地成年进入超过按原有份额分摊的部分，第二部分为净迁移。共同成人存活率使死亡项在份额变化中抵消。两地区有
+$\mathcal M_{1t}=M_{21,t}-M_{12,t}=-\mathcal M_{2t}$。
+
+\subsection{生育率影响空间分布的机制}
+模型允许三类同时发生的机制：
+\begin{enumerate}
+  \item \textbf{当期育儿负担：}出生增加提高儿童抚养比，改变工时和成人等价消费；收入与人口随之调整，影响商品和住房支出，继而改变地区流效用。
+  \item \textbf{前瞻性重配：}居民预见未来工资、房租、抚养负担与政策，提前调整迁移；未来出生冲击可在新生儿成年前影响已有劳动力分布。
+  \item \textbf{延迟成年与均衡反馈：}出生队列在 $J$ 年后成年，同时贸易需求、要素价格和租金分红反馈到迁移及后续出生人数。
+\end{enumerate}
+这些渠道对目标城市份额的合计作用不预先给定。生育率较高地区可以增加未来潜在劳动力，也可能因短期抚养负担引发外迁；方向和大小需要量化。
+
+\section{生育补贴反事实设计}
+\label{sec:counterfactuals}
+
+\subsection{基准路径、比较记号与生育率实验}
+\label{sec:scenario-notation}
+从本节起，以上标 $\B$ 和 $\CF$ 分别标记基准路径与反事实路径。对任意变量 $x$，定义 $\Delta x=x^{\CF}-x^{\B}$；没有情景上标的变量仍表示前文任一给定制度下的均衡量。地区出生流量 $B_{it}$ 的符号含义保持不变。
+
+基准路径采用观测或校准得到的外生基本面与补贴规则，其中生育率和补贴路径记为 $\{f^\B_{it},b^\B_{it}\}$。比较情景使用相同的初始成年人口、儿童队列和结构参数，仅改变被指定的外生输入；工资、租金、迁移、分红和财政税率在每条路径下分别求解。首先，可输入预先给定的生育率路径 $f^{\CF}_{it}$，保持补贴规则和其余基本面不变，以考察生育率变化的总量与空间效应。
+
+\subsection{固定生育率的补贴实验}
+补贴政策的主反事实应保持
+\begin{equation}
+  f^{\CF}_{it}=f^\B_{it},\qquad
+  b^{\CF}_{1t}=b^\B_{1t}+\Delta b_t,\qquad
+  b^{\CF}_{2t}=b^\B_{2t},\qquad \Delta b_t\geq0,
+  \label{eq:fixed-fertility-policy}
+\end{equation}
+其中 $\Delta b_t$ 为目标地区每名新生儿实质补贴相对于基准的增加额，按本地复合品数量计量。
+各情景的税率均由式 \eqref{eq:government-budget} 重新确定。它衡量目标城市补贴在给定生育率下通过收入、财政负担、住房和贸易价格及迁移产生的作用。不能把其中的出生人数变化全部解释为生育意愿变化，因为 $B_{it}=f_{it}N_{it}$ 也会随迁移改变。
+
+可比较以下政策：目标城市单独提高补贴、两地均提高补贴，以及在相同财政支出现值下将补贴集中或分散。等预算比较必须在各自均衡中使用实际出生数和价格重新调整补贴规模，不能只令初始人均名义补贴相等。
+
+\subsection{全国规模与地区份额的比较分解}
+在第\ref{sec:scenario-notation}节定义的基准与反事实路径之间，地区成年人数的变化满足以下精确分解：
+\begin{equation}
+  \Delta N_{it}=\lambda^{N,\B}_{it}\Delta N_t
+               +N_t^{\CF}\Delta\lambda^N_{it}.
+  \label{eq:scale-share-decomposition}
+\end{equation}
+第一项为全国人口规模变化，第二项为空间份额变化。研究空间分布不要求固定全国人口总量，也不能以本地人口增长直接替代本地份额上升。
+
+\subsection{外部给定生育率响应的联合情景}
+若研究目标还包括补贴带来的额外出生，应从外部研究、独立估计或明确的敏感性区间取得生育率响应，再将其作为\textbf{新的外生路径}输入。例如，可预先构造
+\begin{equation}
+  f^{\CF}_{it}
+   =f^\B_{it}\exp\!\left[
+      \epsilon_f\frac{b^{\CF}_{it}-b^\B_{it}}{\bar y_i^{\mathrm{ref}}}
+      \right],
+  \label{eq:external-fertility-response}
+\end{equation}
+其中 $\bar y_i^{\mathrm{ref}}>0$ 为预先固定的基准人均实际收入尺度，使用与 $b_{it}$ 相同的复合品数量单位，并在不同情景间保持不变；$\epsilon_f$ 为外部给定的补贴半弹性参数，表示对补贴与参考收入之比的对数响应。该式是情景输入规则，\textbf{不是家庭的生育最优条件}，也不是本模型识别出的因果关系。只给定 $f_{it}$ 而未提供此类外部响应时，模型不能回答补贴使个体生育率提高多少。
+
+应并列报告：固定生育率的补贴效应、改变生育率但不改变补贴规则的效应，以及二者同时改变的联合效应。一般均衡存在交互，前两项不能机械相加；需要严格归因时，可对两个改变顺序取平均，形成两因素 Shapley 分解。
+
+\subsection{时间窗口、机制和评价指标}
+所有情景使用相同初始人口与儿童队列。基准信息结构为：在 $t=0$ 公布政策路径，居民从该期起预见其开始期、持续期和后续规则。若政策在公布后才开始执行，公布与执行之间的迁移属于提前反应。若研究未预见的政策，应将公布期重新记为 $t=0$，继承公布前基准路径形成的人口状态，并从该期起重算未来均衡；不能同时假定公布前已知完整政策路径。至少报告短期、首批新增出生成年后的中期以及更长期路径：
+\begin{equation}
+  \{\lambda^N_{1t},\lambda^L_{1t},N_t,B_t,
+    M_{12,t},M_{21,t},w_{it}/P_{it},R_{it}/P_{it},
+    \ell_{it},\vartheta_t,G_{it}\}_{t\geq0}.
+\end{equation}
+在固定其他基本面时，可分别关闭照料时间损失（$\varphi_a=0$）、固定基准迁移矩阵、或外生改变住房服务禀赋 $\bar S_i$，检验渠道的重要性。固定迁移矩阵属于\textbf{约束迁移的机制实验}，不再是原自由迁移模型的居民最优均衡，应单独标注。住房禀赋实验考察外生供给数量变化，不含建房成本或投资动态；若研究供给弹性，还须另外定义住房供给函数及其成本。
+
+令 $\delta_G\in(0,1]$ 为财政评价采用的年度贴现因子，$T$ 为前述计算窗口的最后一期，$P_t^{\mathrm{ref}}$ 为将当期货币金额折算成参考消费篮子数量的价格指数，其篮子、基期与折算规则在情景间一致。以 $\mathrm{PVG}$ 表示参考消费篮子单位下的财政支出现值，则
+\begin{equation}
+  \mathrm{PVG}=\sum_{t=0}^{T}\delta_G^t
+      \frac{\sum_iG_{it}}{P^{\mathrm{ref}}_t},
+  \qquad 0<\delta_G\leq1.
+  \label{eq:fiscal-present-value}
+\end{equation}
+对初始成年居民，可用
+$\Delta V_{i0}=V^{\CF}_{i0}-V^\B_{i0}$ 衡量福利变化；由于预算和偏好为对数形式，对其全部在世期消费作共同倍数调整的等价变化为
+\begin{equation}
+  \mathrm{CEV}_{i0}=\exp\{(1-\beta s_A)\Delta V_{i0}\}-1,
+  \label{eq:welfare-cev}
+\end{equation}
+其中 $\mathrm{CEV}_{i0}$ 为消费等价福利变化率；其含义是在基准路径下，对初始处于地区 $i$ 的成人全部在世期消费作相同比例调整，使其达到反事实终身效用所需的调整比例。共同倍数同时作用于商品和住房消费，迁移偏好、成本与存活规则不变。该指标覆盖初始成人，不是包含新增未出生人口的社会福利函数；若比较不同人口规模下的总福利，需要另行说明人口福利准则。
+
+\section{需要的数据、结构参数与识别}
+\label{sec:data-parameters}
+
+\subsection{数据口径与空间聚合}
+所有数据应统一年度、行政边界和常住地口径；出生、儿童、劳动力和迁移应以一致的居住地归属。两个地区内部的流动与贸易应归入本地项，不能只保留跨区域流量后再将每行或每列随意归一化。下列为\textbf{拟获取清单}，不表示已下载或已核验具体变量。
+
+\small
+\begin{longtable}{L{0.16\textwidth}L{0.34\textwidth}L{0.40\textwidth}}
+\caption{模型需要的数据及用途}\label{tab:data}\\
+\toprule
+模块 & 所需变量与口径 & 用途及候选来源\\
+\midrule
+\endfirsthead
+\toprule
+模块 & 所需变量与口径 & 用途及候选来源\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+人口与儿童队列 & 两地成年劳动人口；初始 $1$ 至 $J-1$ 岁儿童人数；连续年度出生人数；性别和年龄结构 & 初始化 $N_{i0},H_{i,a,0}$，构造 $f_{it}$ 和成年进入量。候选为人口普查、人口抽样调查、地区统计资料。出生和劳动力分母需专门匹配。\\
+存活与成年进入 & 儿童单岁存活率、成人存活率；离校和进入劳动市场年龄分布 & 校准 $s^C_a,s_A,J$。生命表与教育、就业统计可用于核对；退休不是本模型中的死亡，不能直接用退休退出率替代存活率。\\
+双边迁移 & 起点、终点、时间、人数，以及原地留存人数；最好能区分儿童、原有成人和新成年者 & 构造 $m_{ij,t}$ 和 $M_{ij,t}$，识别迁移成本和价值响应。候选为人口普查迁移信息及纵向微观调查。五年前居住地不等于年度迁移率；须处理多次迁移和时间聚合。\\
+工资与工时 & 地区工资总额、就业人数、工作时长；父母生育前后工时与照料时间 & 将工资换为单位效率劳动工资，构造 $L_{it}$，校准 $\varphi_a$。可考察 CFPS 等调查及官方就业统计；需核查地理标识、样本代表性和使用权限。\\
+家庭支出 & 商品与住房支出、家庭人口结构、成人与儿童消费、租金分红等收入 & 校准 $\gamma,\chi_C,\chi_H$，检验平均共担假设。候选为住户调查和家庭追踪调查。自有住房要纳入可比的住房服务价值。\\
+住房服务 & 可居住面积或质量调整后的住房服务供给、租金、空置及使用情况 & 校准 $\bar S_i,R_{it}$；住房售价是资产价格，不能不经转换直接当作年度租金。住房面积、质量与服务流需保持一致。\\
+生产与固定要素 & 以可贸易活动为主的产出、劳动报酬、生产用地及其服务租金 & 校准 $\alpha,\bar F_i$ 并反推 $A_{it}$。候选为地区与行业统计、投入产出资料及土地数据。含大量非贸易服务的 GDP 不能直接当作本模型单一可贸易部门收入。\\
+商品贸易 & 四个方向的支出 $X_{11},X_{12},X_{21},X_{22}$，含地区内部交易；可比地区商品价格 & 构造 $\pi_{ij,t}$，约束 $\sigma,\tau_{ij,t},p_{it}$。可考察地区间投入产出表；城市双边贸易不足时需额外数据或明确估计假设。货运量和距离只能辅助，不能直接替代贸易金额。\\
+政策与财政 & 补贴金额、发放频率、儿童年龄、常住或户籍资格、生效时间、领取率、资金来源、税基 & 映射 $b_{it},G_{it},\vartheta_t$；从政策原文和财政执行资料核实。多年度儿童津贴应使用式 \eqref{eq:child-allowance}，不能当作一次性出生补助。\\
+外部响应与验证 & 外部生育率政策响应；未用于校准的迁移、工资、租金及人口份额变化 & 为式 \eqref{eq:external-fertility-response} 提供独立输入，检验模型的样本外或留出期预测。政策响应需有可信识别，不能以出生数和补贴的简单相关性代替。\\
+\end{longtable}
+\normalsize
+
+\noindent 官方数据入口示例为国家统计局的
+\href{https://www.stats.gov.cn/sj/pcsj/rkpc/7rp/zk/indexch.htm}{《中国人口普查年鉴--2020》入口}，以及北京大学中国社会科学调查中心的
+\href{https://www.isss.pku.edu.cn/sjsj/cfpsxm/index.htm}{中国家庭追踪调查介绍与官方数据链接}。
+这些入口不保证目标城市所需的全部交叉表公开可得；需在实际获取时检查年份、变量和访问权限。若只能获得省级贸易表，应说明从省到城市组的映射及其不确定性。
+
+\subsection{参数与外生路径清单}
+\small
+\begin{longtable}{L{0.17\textwidth}L{0.35\textwidth}L{0.38\textwidth}}
+\caption{参数、外生输入与建议识别矩}\label{tab:parameters}\\
+\toprule
+对象 & 含义与限制 & 赋值或识别依据\\
+\midrule
+\endfirsthead
+\toprule
+对象 & 含义与限制 & 赋值或识别依据\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$J$ & 从出生到成年劳动的年数 & 据入劳年龄设定，并检验不同入劳年龄或分布式进入的敏感性。\\
+$s_A,s^C_a$ & 成人与儿童存活率；$(0,1]$ & 生命表和队列变化；基准两地共同，避免把迁移误认作死亡。\\
+$\beta$ & 成人效用贴现因子；$(0,1)$ & 外部校准并报告敏感性；仅靠两地年度迁移通常难以与成本参数同时精确识别。\\
+$\nu$ & 迁移冲击尺度；$\nu>0$ & 迁移对预期相对收入或价值变化的响应。效用中 $\log y$ 的系数已归一为1，仍需时间变化或外部弹性约束。\\
+$\kappa_{12,t},\kappa_{21,t}$ & 一次性迁移成本；非负 & 双边迁移与留存、距离和制度信息。需与地区舒适度区分；不能仅用一期净迁移同时识别全部成本和舒适度。\\
+$\gamma$ & 可贸易品消费支出份额；$(0,1)$ & 住户支出中商品与住房服务的口径一致份额。\\
+$\chi_C,\chi_H$ & 儿童的成人等价商品与住房权重；非负 & 家庭消费和住房需求随儿童数量的变化；选择等价尺度并作敏感性分析。\\
+$\varphi_a$ & 不同儿童年龄的照料时间；非负 & 时间利用和父母劳动供给变化；需区别生育选择与因果照料效应，必要时合并年龄组。\\
+$\alpha$ & 生产用地收入份额；$(0,1)$ & 可贸易生产中对应的固定要素报酬。若数据只支持资本收入份额，应改变固定要素解释并检验，而非直接称为土地份额。\\
+$\sigma,\omega_i$ & CES 替代弹性与来源权重；$\sigma>1$ & 外部贸易弹性、价格和贸易份额。可预设共同来源权重；$\omega_i$ 与 $A_{it}$ 的水平不能在缺少归一化时任意同时反推。\\
+$\tau_{ij,t}$ & 商品冰山贸易成本；本地为1、跨地不小于1 & 双边支出、相对价格、运输条件或独立引力估计；与 $\sigma$、来源权重及生产率联合约束。\\
+$\bar F_i,\bar S_i$ & 本地生产用地与住房服务禀赋 & 土地和住房服务数据；若改变计量单位，生产率水平也须相应调整。\\
+$A_{it},a_{it}$ & 地区生产率与舒适度路径 & 结合产出、工资、土地及迁移反推；设定单位与一个舒适度水平归一化，并限制残差路径，防止逐期自由残差吸收全部政策效应。\\
+$f_{it}$ & 每名成年居民年度出生数；非负 & 按式 \eqref{eq:fertility-conversion} 构造，未来路径为外生情景输入；不是待求的家庭选择。\\
+$b_{it}$ & 每名新生儿获得的实质出生补助；非负 & 政策金额、物价和领取口径；$\vartheta_t$ 由财政预算内生决定，不是独立校准参数。\\
+$\eta$（可选） & 生产集聚外部性；基准为0 & 只用于附录\ref{app:agglomeration} 的扩展设定；从外部研究或额外识别获得，并报告稳定性与结果敏感性。\\
+$\epsilon_f$（联合情景） & 外部给定的补贴生育率半弹性 & 只用于式 \eqref{eq:external-fertility-response}；基准固定生育率政策实验不需要该参数。\\
+\end{longtable}
+\normalsize
+
+\subsection{可用于识别和核验的关系}
+贸易份额给出
+\begin{equation}
+  \log\frac{\pi_{1j,t}}{\pi_{2j,t}}
+   =\log\frac{\omega_1}{\omega_2}
+    +(1-\sigma)\log\frac{\tau_{1j,t}p_{1t}}{\tau_{2j,t}p_{2t}}.
+  \label{eq:trade-identification}
+\end{equation}
+迁移概率给出
+\begin{equation}
+  \log\frac{m_{ij,t}}{m_{ii,t}}
+    =\frac{V_{j,t+1}-V_{i,t+1}-\kappa_{ij,t}}{\nu},
+    \qquad j\ne i.
+  \label{eq:migration-identification}
+\end{equation}
+这些式子说明观测份额约束的是参数与价值的组合，并不自动提供逐个参数的唯一识别。特别是两地区单期数据不足以同时自由估计生产率、舒适度、贸易摩擦、迁移成本及全部弹性。可先用人口和家庭数据确定队列与抚养参数，用独立贸易信息约束贸易弹性和摩擦，再用跨期迁移与工资、租金变化识别迁移响应，最后核验未用于校准的空间份额。
+
+如需模拟矩估计，可写为
+\begin{equation}
+  \widehat\theta=\arg\min_{\theta\in\Theta}
+    [\widehat{\bm m}-\bm m(\theta)]^{\mathsf T}
+      W[\widehat{\bm m}-\bm m(\theta)],
+  \label{eq:smm}
+\end{equation}
+其中 $\theta$ 为待估结构参数向量，$\Theta$ 为满足模型约束的参数可行集合，$\widehat\theta$ 为估计结果；$\widehat{\bm m}$ 为数据计算的样本矩向量，$\bm m(\theta)$ 为给定参数下模型生成的对应矩向量，$W$ 为与矩向量维度一致的对称半正定权重矩阵，$\mathsf T$ 表示矩阵转置。粗体 $\bm m$ 与单个迁移概率 $m_{ij,t}$ 是不同对象。待估参数仅应包含具有独立识别信息的对象，矩可包括双边迁移与留存、工资比、住房租金比、贸易支出份额、育儿工时损失和儿童队列变化。应先检查矩对参数的敏感性与秩，而不是把所有表中对象一并放进优化器。
+
+\section{过渡路径求解与必要检查}
+\label{sec:solution}
+
+给定参数与外生路径后，可采用前后迭代：
+\begin{enumerate}
+  \item 选择 $T>J$ 的计算窗口，给定初始人口队列，猜测未来人口和价格路径；窗口需覆盖新增出生成年后的若干期。
+  \item 沿猜测人口路径逐期求解商品、要素和住房市场、分红与财政税率，得到 $v_{it}$。
+  \item 给定经过验证的终端价值，从后向前求解式 \eqref{eq:bellman}，得到迁移矩阵。
+  \item 从相同初始队列出发，按出生、儿童成长和成年人口方程向前更新人口。
+  \item 对路径作阻尼更新，直至价格、人口、价值、财政和市场出清残差均满足预先报告的容差。
+\end{enumerate}
+不能只做一次向前人口投影，再将工资和迁移称为一般均衡结果。校准和反事实都需重新满足市场与财政约束。
+
+常数基本面不保证人口水平稳态。以下以上标 $*$ 表示不随时间变化的水平稳态值，$f_i$ 表示地区生育率路径的常数尾部值，$N^*=\sum_iN_i^*$。在全国存活率相同的水平稳态中，必要的人口替代条件为
+\begin{equation}
+  (1-s_A)N^*
+    =\left(\prod_{a=0}^{J-1}s^C_a\right)
+       \sum_i f_iN_i^*.
+  \label{eq:stationary-population}
+\end{equation}
+即死亡人数等于存活至成年的出生人数；它只是必要条件，还要满足地区迁移与全部市场条件。若该条件不成立，应使用足够长的外生尾部人口与价格路径、适当的增长路径或经验证的终端近似，不能强制全国人口固定来制造稳态。固定土地和住房也意味着不能未经推导就假定所有人均变量沿同一平衡增长路径增长。
+
+实际求解后至少检查：各期人口加总、儿童队列时序、迁移概率加总、冰山损耗后的产品出清、全国财政平衡、租金分配、收入核算、正工时及税率可行性。对更长终端窗口和不同初始猜测进行敏感性检验，并报告是否存在多重均衡。本文未执行上述估计和数值求解，所有政策方向均保留为待量化结论。
+
+\clearpage
+\appendix
+
+\section{符号、索引与计量口径补充}
+\label{app:notation}
+
+本附录统一说明正文中容易混淆的索引、上标、人口数量、劳动时间和货币流量。结构参数的取值限制与识别依据仍见表\ref{tab:parameters}。下列定义采用正文既有的年度时序与地区内共担假设。
+
+\subsection{索引、上标与运算记号}
+\small
+\begin{longtable}{L{0.25\textwidth}L{0.65\textwidth}}
+\caption{索引与记号说明}\label{tab:notation-conventions}\\
+\toprule
+记号 & 定义\\
+\midrule
+\endfirsthead
+\toprule
+记号 & 定义\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$\mathcal R;i,j,k$ & $\mathcal R$ 为两地区集合；$i,j,k$ 为地区索引。双边下标 $ij$ 的第一位为起点或来源地，第二位为终点或目的地。\\
+$t,T$ & $t$ 为年度时期索引；$T$ 为截断计算窗口的最后一期，在无限期终端条件中令其趋于无穷。\\
+$a,J$ & $a$ 为儿童年龄，$a=0,\ldots,J-1$；$J$ 为进入成年劳动力的年龄，为正整数。\\
+$z,\mathcal A_F$ & $z$ 为育龄女性年龄或年龄组索引；$\mathcal A_F$ 为纳入出生统计的全部相应年龄或年龄组的集合，与儿童年龄集合分别定义。\\
+$\mathrm{data},w$ & 上标 $\mathrm{data}$ 表示数据统计量；$F^w_{i,z,t}$ 的上标 $w$ 标记女性人数，$w_{it}$ 则是单位效率劳动工资。\\
+$\B,\CF,\Delta$ & 上标 $\B$、$\CF$ 分别为基准与反事实；$\Delta x=x^{\CF}-x^{\B}$。$\Delta b_t$ 为政策相对基准的实质补贴增量。\\
+$*,\mathrm{ref}$ & 上标 $*$ 为水平稳态值；$\mathrm{ref}$ 为预先指定的参考收入尺度或参考消费篮子标记。\\
+$\E,\gamma_E$ & $\E$ 为对尚未实现的个体迁移偏好冲击取期望；$\gamma_E$ 为欧拉常数，用于将极值分布冲击中心化。\\
+$\bar F_i,\bar S_i,\bar A_{it}$ & 前两者为固定的生产用地和住房服务禀赋；$\bar A_{it}$ 为剔除集聚项后的基础生产率。横线的含义随具体变量定义。\\
+$\bar\ell_t$ & 全国成年居民的平均市场劳动时间，以地区成年人数份额为权重；该量由均衡决定，具体定义见附录\ref{app:headcount-hours}。\\
+$\theta,\Theta,\widehat\theta$ & 分别为待估结构参数向量、其可行集合及估计结果。\\
+$\widehat{\bm m},\bm m(\theta),W$ & 分别为样本矩向量、模型生成的对应矩向量及对称半正定权重矩阵；$\mathsf T$ 表示转置。\\
+\end{longtable}
+\normalsize
+
+\subsection{人口、劳动与家庭变量}
+\small
+\begin{longtable}{L{0.23\textwidth}L{0.43\textwidth}L{0.24\textwidth}}
+\caption{人口、劳动与家庭变量口径}\label{tab:notation-households}\\
+\toprule
+变量 & 定义 & 计量口径\\
+\midrule
+\endfirsthead
+\toprule
+变量 & 定义 & 计量口径\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$N_{it},N_t$ & 地区与全国成年劳动人数，$N_t=\sum_iN_{it}$ & 人口存量，按期初居住地归属。\\
+$H_{i,a,t},D_{it}$ & 年龄为 $a$ 的儿童人数及儿童总人数，$D_{it}=\sum_aH_{i,a,t}$ & 人口存量；当期零岁队列由出生生成。\\
+$B_{it},B_t$ & 地区与全国年度出生人数，$B_t=\sum_iB_{it}$ & 一期内的出生流量。\\
+$g_{i,z,t},F^w_{i,z,t}$ & 年龄别女性生育率及对应女性人数 & 年度出生数/女性；与其分母同年龄、同地区、同时间。\\
+$f_{it}$ & 每名成年居民对应的年度出生数 & 外生年度路径，以成年劳动人口为分母。\\
+$d_{it}$ & 平均儿童抚养比，$D_{it}/N_{it}$ & 儿童人数/成年人数。\\
+$\ell_{it},L_{it}$ & 人均市场劳动时间及地区总效率劳动 & 单个成人年度时间禀赋为1，$L_{it}=N_{it}\ell_{it}$。\\
+$\varphi_a$ & 照料一名 $a$ 岁儿童所占用的成人劳动时间 & 成人年度时间单位/儿童。\\
+$\chi_C,\chi_H$ & 儿童相对成人的商品与住房服务需求权重 & 成人等价需求单位/儿童。\\
+$e^C_{it},e^H_{it}$ & 每名成人对应的家庭商品与住房成人等价尺度 & 无量纲，分别为 $1+\chi_Cd_{it}$ 与 $1+\chi_Hd_{it}$。\\
+$c_{it},h_{it}$ & 每名成人分摊的家庭商品与住房消费，均含儿童消费 & 复合品实物数量、住房服务数量。\\
+$u_{it},v_{it},V_{it}$ & 给定消费的流效用、最优消费后的间接流效用、期望终身效用 & 对数效用单位；终身价值含未来最优迁移。\\
+$A^E_{it},A^E_t$ & 地区迁移前与全国的新成年人数 & 在 $t$ 期末成年、于 $t+1$ 期参加成年活动的人数。\\
+$\widetilde N_{it}$ & 期末迁移前的成年人口池 & 存活成人与新成年者之和。\\
+$m_{ij,t}$ & 从 $i$ 到 $j$ 的条件选择概率 & 条件于个体存活或刚成年；$m_{ii,t}$ 为留存概率。\\
+$M_{ij,t},\mathcal M_{it}$ & 成年人口的起终点流量与地区净迁入人数 & 期末到下一期初的流量；$M_{ii,t}$ 为留存人数。\\
+$\lambda^N_{it},\lambda^L_{it}$ & 成年劳动人数份额与效率劳动份额 & 分母分别为全国成年人数与全国总效率劳动。\\
+\end{longtable}
+\normalsize
+
+\subsection{生产、价格、支出与财政变量}
+\small
+\begin{longtable}{L{0.23\textwidth}L{0.43\textwidth}L{0.24\textwidth}}
+\caption{生产、价格与财政变量口径}\label{tab:notation-production}\\
+\toprule
+变量 & 定义 & 计量口径\\
+\midrule
+\endfirsthead
+\toprule
+变量 & 定义 & 计量口径\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$Y_{it},F_{it}$ & 地区产品总产出、生产用地服务投入 & 地区来源产品数量、土地服务数量。\\
+$A_{it},a_{it}$ & 全要素生产率、地区居住舒适度 & 生产技术尺度、效用中的地区吸引力。\\
+$p_{it},p_{ij,t}$ & 地区产品的出厂价格及运抵目的地的交付价格 & 货币/来源地产品单位。\\
+$P_{it},R_{it}$ & 本地复合品价格指数、单位住房服务租金 & 货币/复合品单位、货币/住房服务单位。\\
+$w_{it},r_{it}$ & 单位效率劳动工资、生产用地服务租金 & 货币/成人年度劳动单位、货币/土地服务单位。\\
+$q_{ij,t},Q_{jt}$ & 双边实际交付量、目的地 CES 复合品总量 & 前者不含冰山损耗；$\tau_{ij,t}q_{ij,t}$ 为出厂发出量。\\
+$\pi_{ij,t},X_{ij,t}$ & 目的地对来源地的支出份额及双边销售额 & 无量纲份额、货币流量；$X_{ij,t}=\pi_{ij,t}E_{jt}$。\\
+$y_{it},I_{it}$ & 人均及地区居民可支配收入 & 货币/成人、地区货币总额，$I_{it}=N_{it}y_{it}$。\\
+$E_{it},\mathcal D_{it}$ & 地区可贸易品支出、人均租金分红 & 地区货币流量、货币/成人；$E_{it}=\gamma I_{it}$。\\
+$b_{it},b_{i,a,t}$ & 每名新生儿的一次性实质补助、每名相应年龄儿童的年度实质津贴 & 复合品数量/儿童；乘以 $P_{it}$ 后为货币金额。\\
+$G_{it},T_{it},\vartheta_t$ & 地区补贴总支出、居民劳动税缴纳总额、全国劳动所得税率 & 前两者为货币流量，税率为无量纲。\\
+$\bar y_i^{\mathrm{ref}},P_t^{\mathrm{ref}}$ & 固定参考人均实际收入、参考消费篮子价格指数 & 前者与实质补贴采用相同数量单位；后者用于财政支出折算。\\
+$\delta_G,\mathrm{PVG}$ & 财政评价贴现因子、财政支出现值 & 年度贴现因子、参考消费篮子数量。\\
+$\mathrm{CEV}_{i0}$ & 初始成年居民的消费等价福利变化率 & 基准在世期商品和住房消费的共同调整比例。\\
+\end{longtable}
+\normalsize
+
+\section{相关公式的解释与推导}
+\label{app:derivations}
+
+本附录依次说明正文式 \eqref{eq:fertility-conversion}、\eqref{eq:individual-labor-time}、\eqref{eq:equivalence} 和 \eqref{eq:headcount-hours} 的变量关系、成立条件及经济含义。附录中的中间步骤单独编号，并以交叉引用对应正文。
+
+\subsection{年龄别女性生育率向模型生育率的换算}
+\label{app:fertility-conversion}
+
+正文式 \eqref{eq:fertility-conversion} 先将女性年龄别生育率转换为地区出生人数，再将其换算到成年劳动人口这一模型分母。$z$ 为女性年龄或年龄组，$\mathcal A_F$ 为其取值集合；这一集合应覆盖纳入统计的母亲年龄，且各组互不重叠。以 $B^{\mathrm{data}}_{i,z,t}$ 表示归属于该年龄女性的年度出生人数，则在 $F^w_{i,z,t}>0$ 时，按年龄别生育率的定义有
+\begin{equation}
+  g_{i,z,t}=\frac{B^{\mathrm{data}}_{i,z,t}}{F^w_{i,z,t}},
+  \qquad
+  B^{\mathrm{data}}_{i,z,t}=g_{i,z,t}F^w_{i,z,t}.
+  \label{eq:app-age-specific-births}
+\end{equation}
+女性人数为零的年龄组不贡献出生人数。对女性年龄加总，即得到地区年度出生总数：
+\begin{equation}
+  B^{\mathrm{data}}_{it}
+  =\sum_{z\in\mathcal A_F}B^{\mathrm{data}}_{i,z,t}
+  =\sum_{z\in\mathcal A_F}g_{i,z,t}F^w_{i,z,t}.
+  \label{eq:app-total-births}
+\end{equation}
+再由模型出生关系 $B_{it}=f_{it}N_{it}$ 的数据对应式，得到
+\begin{equation}
+  f_{it}=\frac{B^{\mathrm{data}}_{it}}{N^{\mathrm{data}}_{it}}
+  =\frac{\sum_{z\in\mathcal A_F}g_{i,z,t}F^w_{i,z,t}}
+         {N^{\mathrm{data}}_{it}}.
+  \label{eq:app-fertility-conversion}
+\end{equation}
+$g_{i,z,t}$ 的单位是每名相应年龄女性的年度出生数，$f_{it}$ 的单位是每名成年劳动人口的年度出生数。原始生育率若以千分率公布，应先换成每人单位。采用年龄组时，生育率和女性人数必须对应同一组、同一年度；在已使用该组年度生育率和该组女性总人数计算出生数后，无需再乘年龄组宽度。
+
+这一换算是统计口径转换。将计算得到的 $f_{it}$ 作为外生路径使用，意味着后续情景不由家庭生育最优化决定出生率。固定 $f_{it}$ 时，地区出生人数仍随成年人口和迁移变化。
+
+\subsection{儿童照料时间与人均劳动供给}
+\label{app:labor-time}
+
+正文式 \eqref{eq:individual-labor-time} 来自成人时间禀赋扣除照料时间的约束。每名成年人可在市场劳动和儿童照料之间分配的年度时间归一化为1，因此地区成人总时间禀赋为 $N_{it}$。照料年龄为 $a$ 的一名儿童需要 $\varphi_a$ 单位成人年度时间，照料该年龄全部儿童需要 $\varphi_aH_{i,a,t}$。不同年龄加总后的照料时间为
+\begin{equation}
+  \sum_{a=0}^{J-1}\varphi_aH_{i,a,t}.
+  \label{eq:app-care-time}
+\end{equation}
+地区内共同分担照料任务，且其余可分配时间均用于市场劳动，故时间约束为
+\begin{equation}
+  N_{it}\ell_{it}+\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}=N_{it}.
+  \label{eq:app-time-constraint}
+\end{equation}
+两边除以 $N_{it}>0$ 并移项，得到
+\begin{equation}
+  \ell_{it}
+  =\frac{N_{it}-\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}}{N_{it}}
+  =1-\frac{\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}}{N_{it}}.
+  \label{eq:app-labor-time}
+\end{equation}
+再乘以成年人数，便得到总效率劳动
+\begin{equation}
+  L_{it}=N_{it}\ell_{it}
+        =N_{it}-\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}.
+  \label{eq:app-effective-labor}
+\end{equation}
+因此，照料负担占用生产时间，即使成年劳动人数不变，总劳动投入也会变化。不同儿童年龄可以有不同照料强度；不能仅由儿童总人数推断劳动损失。若 $\varphi_a$ 对所有儿童年龄均相同，记为 $\varphi$，则该表达式可化为 $\ell_{it}=1-\varphi d_{it}$。
+
+正劳动时间的可行性条件为
+\begin{equation}
+  0\leq\sum_{a=0}^{J-1}\varphi_aH_{i,a,t}<N_{it}.
+  \label{eq:app-time-feasibility}
+\end{equation}
+这里的劳动规则依赖于地区平均照料共担、单位劳动效率相同和不另设闲暇选择三项假设，因而是时间约束下的劳动供给设定。$\varphi_a$ 应衡量会占用可供市场劳动时间的照料，且不能再把同一照料时间重复计为另一项劳动损失。
+
+由 $H_{i,0,t}=f_{it}N_{it}$ 可将人均劳动时间进一步写为
+\begin{equation}
+  \ell_{it}=1-\varphi_0f_{it}
+      -\frac{\sum_{a=1}^{J-1}\varphi_aH_{i,a,t}}{N_{it}}.
+  \label{eq:app-fertility-care-channel}
+\end{equation}
+在成年人数、已有儿童队列与照料参数给定时，$\partial\ell_{it}/\partial f_{it}=-\varphi_0$。这是生育率对当期劳动时间的直接照料效应；一般均衡中的人口迁移和价格调整还会产生额外反馈。新增出生在满 $J$ 岁以前不直接计入成年劳动人数，故该短期渠道与长期成年进入渠道在时间上分别发生。
+
+\subsection{商品与住房的成人等价尺度}
+\label{app:equivalence}
+
+正文式 \eqref{eq:equivalence} 将包含儿童需求的家庭消费按成人需求单位折算。设一名成人自身的商品需求权重为1，一名儿童的相应权重为 $\chi_C$，则地区家庭商品需求的成人等价人数为 $N_{it}+\chi_CD_{it}$。每名成人所对应的等价尺度为
+\begin{equation}
+  e^C_{it}
+  =\frac{N_{it}+\chi_CD_{it}}{N_{it}}
+  =1+\chi_C\frac{D_{it}}{N_{it}}
+  =1+\chi_Cd_{it}.
+  \label{eq:app-goods-equivalence}
+\end{equation}
+同理，将一名儿童的住房服务需求权重记为 $\chi_H$，得到
+\begin{equation}
+  e^H_{it}
+  =\frac{N_{it}+\chi_HD_{it}}{N_{it}}
+  =1+\chi_Hd_{it}.
+  \label{eq:app-housing-equivalence}
+\end{equation}
+由于每名成人分摊的 $c_{it}$ 和 $h_{it}$ 已包含儿童消费，地区商品与住房消费总量分别为 $N_{it}c_{it}$ 和 $N_{it}h_{it}$。因此，每个成人等价需求单位享有的消费为
+\begin{align}
+  \frac{c_{it}}{e^C_{it}}
+    &=\frac{N_{it}c_{it}}{N_{it}+\chi_CD_{it}},
+    \label{eq:app-equivalent-goods-consumption}\\
+  \frac{h_{it}}{e^H_{it}}
+    &=\frac{N_{it}h_{it}}{N_{it}+\chi_HD_{it}}.
+    \label{eq:app-equivalent-housing-consumption}
+\end{align}
+这正是正文效用函数中使用两个比值的原因：在家庭消费数量给定时，儿童抚养比增加会扩大需要分享消费的成人等价需求数量。$\chi_C$ 和 $\chi_H$ 作用于需求折算，$\varphi_a$ 作用于时间占用，两类参数分别刻画消费与照料负担。
+
+在给定抚养比下，$-\gamma\log e^C_{it}-(1-\gamma)\log e^H_{it}$ 是相对于消费选择的常数。因此，当前 Cobb--Douglas 偏好下的最优支出仍满足
+\begin{equation}
+  P_{it}c_{it}=\gamma y_{it},\qquad
+  R_{it}h_{it}=(1-\gamma)y_{it}.
+  \label{eq:app-equivalence-budget-shares}
+\end{equation}
+等价尺度用于福利比较，不在既有预算之外再增加一笔儿童消费。在 $c_{it},h_{it},a_{it}$ 给定时，其对流效用的直接影响为
+\begin{equation}
+  \left.\frac{\partial u_{it}}{\partial d_{it}}\right|_{c,h,a}
+  =-\frac{\gamma\chi_C}{1+\chi_Cd_{it}}
+   -\frac{(1-\gamma)\chi_H}{1+\chi_Hd_{it}}\leq0.
+  \label{eq:app-dependency-utility}
+\end{equation}
+该偏导只表示消费折算渠道，完整均衡效应还包含照料工时、收入、价格和迁移的变化。
+
+\subsection{劳动人数份额与效率劳动份额的关系}
+\label{app:headcount-hours}
+
+正文式 \eqref{eq:headcount-hours} 是劳动投入和地区份额定义所蕴含的恒等式。由 $L_{it}=N_{it}\ell_{it}$，将地区劳动投入代入效率劳动份额，可得
+\begin{align}
+  \lambda^L_{it}
+   &=\frac{L_{it}}{\sum_{j=1}^2L_{jt}}
+     =\frac{N_{it}\ell_{it}}{\sum_{j=1}^2N_{jt}\ell_{jt}}
+       \notag\\
+   &=\frac{(N_{it}/N_t)\ell_{it}}
+           {\sum_{j=1}^2(N_{jt}/N_t)\ell_{jt}}
+     =\frac{\lambda^N_{it}\ell_{it}}
+           {\sum_{j=1}^2\lambda^N_{jt}\ell_{jt}}.
+  \label{eq:app-share-derivation}
+\end{align}
+第三个等号将分子和分母同时除以全国成年人数 $N_t>0$；最后一个等号使用 $\lambda^N_{it}=N_{it}/N_t$。因此，该关系无需增加新的行为假设或独立市场出清条件。
+
+定义全国成年居民的平均市场劳动时间
+\begin{equation}
+  \bar\ell_t
+    =\sum_{j=1}^2\lambda^N_{jt}\ell_{jt}
+    =\frac{\sum_{j=1}^2N_{jt}\ell_{jt}}{N_t}
+    =\frac{L_{1t}+L_{2t}}{N_t}.
+  \label{eq:app-national-average-hours}
+\end{equation}
+于是式 \eqref{eq:headcount-hours} 也可写成
+\begin{equation}
+  \lambda^L_{it}
+     =\lambda^N_{it}\frac{\ell_{it}}{\bar\ell_t},\qquad
+  \frac{\lambda^L_{it}}{\lambda^N_{it}}
+     =\frac{\ell_{it}}{\bar\ell_t}.
+  \label{eq:app-relative-hours-share}
+\end{equation}
+其经济含义是，劳动人数份额经人均劳动时间加权、再按全国平均劳动时间归一化后，得到效率劳动份额。人均劳动时间高于全国平均的地区，其效率劳动份额高于人数份额；两地人均劳动时间相同时，两种份额相等。育儿照料可以在成年人数不变的情况下改变地区工时，因此实证和反事实需要同时报告两种份额。
+
+\section{可选集聚设定及其与基准模型的衔接}
+\label{app:agglomeration}
+正文的基准均衡将 $A_{it}$ 作为外生生产率路径，不含生产集聚外部性。如果需要研究生产率随当地劳动密度变化的扩展，可另设
+\begin{equation}
+  A_{it}=\bar A_{it}\left(\frac{L_{it}}{\bar F_i}\right)^{\eta},
+  \qquad \eta\geq0,
+  \label{eq:agglomeration-extension}
+\end{equation}
+其中 $\bar A_{it}>0$ 为外生基础生产率，$\eta\geq0$ 为生产率对地区劳动密度 $L_{it}/\bar F_i$ 的弹性。$\eta=0$ 时，$A_{it}=\bar A_{it}$，回到正文的外生生产率设定。
+
+启用该扩展后，均衡定义中的外生生产率输入应从 $\{A_{it}\}$ 改为 $\{\bar A_{it}\}$，并将式 \eqref{eq:agglomeration-extension} 加入均衡约束，实际生产率 $A_{it}$ 随均衡劳动投入内生变化。不能同时将两条生产率路径都独立固定。企业在个体最优化中仍将地区生产率视为给定，因而私人的单位成本与要素支付条件沿用正文；集聚反馈发生在地区总量层面。
+
+该扩展不改变生育率外生、儿童成长、地区内抚养共担和补贴融资规则，但会改变生产、工资与迁移的反馈，可能影响均衡数量及过渡路径稳定性。给定有界流效用路径的居民价值递归仍使用 $\beta s_A<1$ 的收缩条件；这并不直接保证扩展后整个一般均衡唯一或算法收敛。
+
+\clearpage
+\begin{thebibliography}{99}
+\bibitem[Redding and Rossi-Hansberg(2017)]{redding2017quantitative}
+Redding, S. J., and E. Rossi-Hansberg. 2017.
+Quantitative Spatial Economics.
+\emph{Annual Review of Economics}, 9: 21--58.
+\href{https://doi.org/10.1146/annurev-economics-063016-103713}{doi:10.1146/annurev-economics-063016-103713}.
+
+\bibitem[Kleinman et~al.(2023)Kleinman, Liu, and Redding]{kleinman2023dynamic}
+Kleinman, B., E. Liu, and S. J. Redding. 2023.
+Dynamic Spatial General Equilibrium.
+\emph{Econometrica}, 91(2): 385--424.
+\href{https://doi.org/10.3982/ECTA20273}{doi:10.3982/ECTA20273}.
+\end{thebibliography}
+
+\end{document}
